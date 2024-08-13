@@ -6,33 +6,52 @@ import 'package:receipe_app/ui/screens/home/home_screen.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 
 void main() {
-  runApp(MyApp());
+  final AuthenticationRepository authenticationRepository =
+      AuthenticationRepository();
+
+  runApp(MultiBlocProvider(providers: [
+    BlocProvider(
+      create: (context) => AuthBloc(authRepository: authenticationRepository),
+    )
+  ], child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
-  final AuthenticationRepository _authenticationRepository =
-      AuthenticationRepository();
-
-  MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AuthBloc(authRepository: _authenticationRepository),
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Authentication Bloc',
-        theme: ThemeData(primarySwatch: Colors.blue),
-        home: BlocBuilder<AuthBloc, AuthState>(
-          // bloc: context.read<AuthBloc>()..add(CheckToki),
-          builder: (context, state) {
-            if (state.authStatus == AuthStatus.authenticated) {
-              return HomeScreen();
-            } else {
-              return const LoginScreen();
-            }
-          },
-        ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Authentication Bloc',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: BlocConsumer<AuthBloc, AuthState>(
+        bloc: context.read<AuthBloc>()..add(const CheckTokenExpiryEvent()),
+        listener: (context, state) {
+          if (state.authStatus == AuthStatus.loading) {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+          if (state.authStatus == AuthStatus.unauthenticated ||
+              state.authStatus == AuthStatus.authenticated) {
+            Navigator.of(context).pop();
+          }
+        },
+        builder: (context, state) {
+          print(state.error);
+          print(state);
+          if (state.authStatus == AuthStatus.authenticated) {
+            return const HomeScreen();
+          } else if (state.authStatus == AuthStatus.unauthenticated) {
+            return const LoginScreen();
+          }
+          return const SizedBox();
+        },
+
       ),
     );
   }
