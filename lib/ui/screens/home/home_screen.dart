@@ -3,11 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:receipe_app/core/utils/app_colors.dart';
 import 'package:receipe_app/core/utils/app_icons.dart';
-import 'package:receipe_app/data/service/shared_preference/user_prefs_service.dart';
 import 'package:receipe_app/logic/cubit/tab_box/tab_box_cubit.dart';
 import 'package:receipe_app/ui/screens/profile/profile_screen.dart';
-
-import '../../../logic/bloc/user/user_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,18 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  void getUserData() async {
-    final String? userEmail = await UserPrefsService.email;
-    print(userEmail);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    getUserData();
     return BlocBuilder<TabBoxCubit, int>(
       builder: (context, state) {
         return Scaffold(

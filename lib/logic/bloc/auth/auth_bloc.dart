@@ -34,17 +34,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         uid: responseUser.id,
         email: responseUser.email,
       );
-      print(event.email);
-      print(responseUser.id);
-      print(appResponse.isSuccess);
-      print(appResponse.data);
       if (appResponse.isSuccess && appResponse.errorMessage.isEmpty) {
-        print('keldiiiiiiiii');
         final UserModel userModel = appResponse.data;
 
         await _userPrefsService.updateUserData(user: userModel);
       }
-      print('eeeeeeeeeeeeeeeeeeeeeeeee');
 
       emit(state.copyWith(authStatus: AuthStatus.authenticated));
     } catch (e) {

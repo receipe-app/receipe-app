@@ -25,7 +25,6 @@ class UserDioService {
           value['id'] = key;
           appResponse.data = UserModel.fromJson(value);
           appResponse.isSuccess = true;
-          print('object');
           break;
         }
       }
@@ -34,7 +33,6 @@ class UserDioService {
         appResponse.statusCode = e.response?.statusCode;
       }
       appResponse.errorMessage = e.toString();
-      print(appResponse.errorMessage);
     }
 
     log(appResponse.errorMessage);

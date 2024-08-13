@@ -16,8 +16,6 @@ class UserPrefsService {
     decodedData['likedRecipesId'] = user.likedRecipesId;
     decodedData['savedRecipesId'] = user.savedRecipesId;
 
-    print(decodedData);
-
     preferences.setString('userData', jsonEncode(decodedData));
   }
 
@@ -30,7 +28,6 @@ class UserPrefsService {
     final decodedData = jsonDecode(data) as Map<String, dynamic>;
 
     decodedData.remove('idToken');
-    print(decodedData);
 
     return decodedData[dataName] as String?;
   }
