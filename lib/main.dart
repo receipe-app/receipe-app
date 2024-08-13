@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipe_app/logic/bloc/auth/auth_bloc.dart';
 import 'package:receipe_app/ui/screens/auth/login_screen.dart';
-import 'package:receipe_app/ui/screens/home/home_screen.dart';
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:receipe_app/ui/screens/profile/profile_screen.dart';
 
 void main() {
   final AuthenticationRepository authenticationRepository =
@@ -13,10 +13,11 @@ void main() {
     BlocProvider(
       create: (context) => AuthBloc(authRepository: authenticationRepository),
     )
-  ], child: MyApp()));
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
             showDialog(
               context: context,
               barrierDismissible: false,
-              builder: (context) => Center(
+              builder: (context) => const Center(
                 child: CircularProgressIndicator(),
               ),
             );
@@ -42,16 +43,15 @@ class MyApp extends StatelessWidget {
           }
         },
         builder: (context, state) {
-          print(state.error);
-          print(state);
+          // print(state.error);
+          // print(state);
           if (state.authStatus == AuthStatus.authenticated) {
-            return const HomeScreen();
+            return const ProfileScreen();
           } else if (state.authStatus == AuthStatus.unauthenticated) {
             return const LoginScreen();
           }
           return const SizedBox();
         },
-
       ),
     );
   }
