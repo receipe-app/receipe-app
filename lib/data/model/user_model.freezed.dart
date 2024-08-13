@@ -22,6 +22,7 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) {
 mixin _$UserModel {
   String get id => throw _privateConstructorUsedError;
   String get uid => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
   String get imageUrl => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
   List<String> get savedRecipesId => throw _privateConstructorUsedError;
@@ -45,6 +46,7 @@ abstract class $UserModelCopyWith<$Res> {
   $Res call(
       {String id,
       String uid,
+      String name,
       String imageUrl,
       String email,
       List<String> savedRecipesId,
@@ -68,6 +70,7 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
   $Res call({
     Object? id = null,
     Object? uid = null,
+    Object? name = null,
     Object? imageUrl = null,
     Object? email = null,
     Object? savedRecipesId = null,
@@ -81,6 +84,10 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
       uid: null == uid
           ? _value.uid
           : uid // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
               as String,
       imageUrl: null == imageUrl
           ? _value.imageUrl
@@ -113,6 +120,7 @@ abstract class _$$UserModelImplCopyWith<$Res>
   $Res call(
       {String id,
       String uid,
+      String name,
       String imageUrl,
       String email,
       List<String> savedRecipesId,
@@ -134,6 +142,7 @@ class __$$UserModelImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? uid = null,
+    Object? name = null,
     Object? imageUrl = null,
     Object? email = null,
     Object? savedRecipesId = null,
@@ -147,6 +156,10 @@ class __$$UserModelImplCopyWithImpl<$Res>
       uid: null == uid
           ? _value.uid
           : uid // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
               as String,
       imageUrl: null == imageUrl
           ? _value.imageUrl
@@ -174,6 +187,7 @@ class _$UserModelImpl implements _UserModel {
   _$UserModelImpl(
       {required this.id,
       required this.uid,
+      required this.name,
       required this.imageUrl,
       required this.email,
       required final List<String> savedRecipesId,
@@ -188,6 +202,8 @@ class _$UserModelImpl implements _UserModel {
   final String id;
   @override
   final String uid;
+  @override
+  final String name;
   @override
   final String imageUrl;
   @override
@@ -210,7 +226,7 @@ class _$UserModelImpl implements _UserModel {
 
   @override
   String toString() {
-    return 'UserModel(id: $id, uid: $uid, imageUrl: $imageUrl, email: $email, savedRecipesId: $savedRecipesId, likedRecipesId: $likedRecipesId)';
+    return 'UserModel(id: $id, uid: $uid, name: $name, imageUrl: $imageUrl, email: $email, savedRecipesId: $savedRecipesId, likedRecipesId: $likedRecipesId)';
   }
 
   @override
@@ -220,6 +236,7 @@ class _$UserModelImpl implements _UserModel {
             other is _$UserModelImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.uid, uid) || other.uid == uid) &&
+            (identical(other.name, name) || other.name == name) &&
             (identical(other.imageUrl, imageUrl) ||
                 other.imageUrl == imageUrl) &&
             (identical(other.email, email) || other.email == email) &&
@@ -235,6 +252,7 @@ class _$UserModelImpl implements _UserModel {
       runtimeType,
       id,
       uid,
+      name,
       imageUrl,
       email,
       const DeepCollectionEquality().hash(_savedRecipesId),
@@ -260,6 +278,7 @@ abstract class _UserModel implements UserModel {
   factory _UserModel(
       {required final String id,
       required final String uid,
+      required final String name,
       required final String imageUrl,
       required final String email,
       required final List<String> savedRecipesId,
@@ -272,6 +291,8 @@ abstract class _UserModel implements UserModel {
   String get id;
   @override
   String get uid;
+  @override
+  String get name;
   @override
   String get imageUrl;
   @override

@@ -8,6 +8,7 @@ class UserModel with _$UserModel {
   factory UserModel({
     required String id,
     required String uid,
+    required String name,
     required String imageUrl,
     required String email,
     required List<String> savedRecipesId,

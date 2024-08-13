@@ -82,9 +82,7 @@ class AuthenticationRepository {
         email: user['email'],
         token: user['idToken'],
         refreshToken: user['refreshToken'],
-        expiresIn: DateTime.parse(
-          user['expiresIn'],
-        ),
+        expiresIn: DateTime.parse(user['expiresIn']),
       );
     }
 

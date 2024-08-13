@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
 class TabScreen extends StatelessWidget {
+  const TabScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Tab UI Example'),
+          title: const Text('Tab UI Example'),
           bottom: TabBar(
             indicator: BoxDecoration(
               color: Colors.green,
@@ -15,14 +17,14 @@ class TabScreen extends StatelessWidget {
             ),
             labelColor: Colors.white,
             unselectedLabelColor: Colors.teal[200],
-            tabs: [
+            tabs: const [
               Tab(text: 'Recipe'),
               Tab(text: 'Videos'),
               Tab(text: 'Tag'),
             ],
           ),
         ),
-        body: TabBarView(
+        body: const TabBarView(
           children: [
             Center(child: Text('Recipe Page')),
             Center(child: Text('Videos Page')),
