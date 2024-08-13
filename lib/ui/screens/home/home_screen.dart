@@ -13,8 +13,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0;
-
   final List<Widget> _widgets = const [
     Placeholder(),
     FlutterLogo(size: 200),
