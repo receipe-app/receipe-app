@@ -26,6 +26,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(state.copyWith(authStatus: AuthStatus.loading));
     try {
       await _authRepository.login(email: event.email, password: event.password);
+      emit(state.copyWith(authStatus: AuthStatus.authenticated));
     } catch (e) {
       emit(state.copyWith(authStatus: AuthStatus.error, error: e.toString()));
     }
@@ -39,6 +40,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         email: event.email,
         password: event.password,
       );
+      emit(state.copyWith(authStatus: AuthStatus.authenticated));
     } catch (e) {
       emit(state.copyWith(authStatus: AuthStatus.error, error: e.toString()));
     }
@@ -57,4 +59,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(state.copyWith(authStatus: AuthStatus.error, error: e.toString()));
     }
   }
+
+  // void _onCheckTokenExpiry(CheckTokenExpiryEvent event, emit) async {
+  //   emit(LoadingAuthState());
+  //   final user = await _authRepository.checkTokenExpiry();
+  //   if (user != null) {
+  //     emit(AuthenticatedAuthState(user));
+  //   } else {
+  //     emit(UnAuthenticatedAuthState());
+  //   }
+  // }
 }
