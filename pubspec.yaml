@@ -41,6 +41,10 @@ dependencies:
   bloc: ^8.1.4
   firebase_auth: ^5.1.4
   get_it: ^7.7.0
+  authentication_repository:
+    path: packages/authentication_repository
+  freezed_annotation: ^2.2.0
+  dio: ^5.5.0+1
 
 dev_dependencies:
   flutter_test:
@@ -52,6 +56,9 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
+  build_runner: ^2.3.0
+  freezed: ^2.3.0
+  json_serializable: ^6.6.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
