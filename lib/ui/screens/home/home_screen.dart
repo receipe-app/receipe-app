@@ -12,12 +12,12 @@ class HomeScreen extends StatelessWidget {
         actions: [
           IconButton(
               onPressed: () {
-                context.read<AuthBloc>().add(AuthEvent.logout());
+                context.read<AuthBloc>().add(const AuthEvent.logout());
               },
-              icon: Icon(Icons.logout))
+              icon: const Icon(Icons.logout))
         ],
       ),
-      body: Center(
+      body: const Center(
         child: Text('Home'),
       ),
     );

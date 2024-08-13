@@ -27,7 +27,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: const Text('Passwords do not match')),
+          const SnackBar(content:  Text('Passwords do not match')),
         );
       }
     }
