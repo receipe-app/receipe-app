@@ -1,20 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:receipe_app/core/utils/app_colors.dart';
+import '../../../logic/bloc/auth/auth_bloc.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile', style: TextStyle(color: Colors.black)),
+        title: const Text('Profile', style: TextStyle(color: AppColors.black)),
         elevation: 0,
         centerTitle: true,
+        backgroundColor: AppColors.white,
         actions: [
           IconButton(
-            icon: const Icon(Icons.more_vert, color: Colors.black),
-            onPressed: () {},
-          ),
+              onPressed: () {
+                context.read<AuthBloc>().add(const AuthEvent.logout());
+              },
+              icon: const Icon(Icons.logout))
         ],
       ),
       body: Padding(
@@ -64,58 +89,142 @@ class ProfileScreen extends StatelessWidget {
               onPressed: () {},
               child: const Text('More...'),
             ),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20.0),
+                border: Border.all(color: AppColors.gray1),
+              ),
+              child: TabBar(
+                controller: _tabController,
+                indicator: BoxDecoration(
+                  color: AppColors.primary100,
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                labelColor: Colors.white,
+                unselectedLabelColor: AppColors.gray1,
+                tabs: const [
+                  Tab(text: 'Liked'),
+                  Tab(text: 'Saved'),
+                  Tab(text: 'Created'),
+                ],
+              ),
+            ),
             const SizedBox(height: 16),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   children: [
-            //     _buildCategoryButton('Recipe', true),
-            //     const SizedBox(width: 8),
-            //     _buildCategoryButton('Videos', false),
-            //     const SizedBox(width: 8),
-            //     _buildCategoryButton('Tag', false),
-            //   ],
-            // ),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  _buildTabContent('Liked Recipes'),
+                  _buildTabContent('Saved Recipes'),
+                  _buildTabContent('Created Recipes'),
+                ],
+              ),
+            ),
           ],
         ),
       ),
     );
   }
-}
 
-Widget _buildInfoColumn(String label, String count) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        count,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 20,
+  Widget _buildInfoColumn(String label, String count) {
+    return Column(
+      children: [
+        Text(
+          count,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
         ),
-      ),
-      const SizedBox(height: 4),
-      Text(
-        label,
-        style: const TextStyle(
-          color: Colors.grey,
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: const TextStyle(
+            color: AppColors.gray1,
+          ),
         ),
-      ),
-    ],
-  );
-}
+      ],
+    );
+  }
 
- // Widget _buildCategoryButton(String label, bool isSelected) {
-  //   return Expanded(
-  //     child: ElevatedButton(
-  //       onPressed: () {},
-  //       style: ElevatedButton.styleFrom(
-  //         foregroundColor: isSelected ? Colors.white : Colors.black,
-  //         backgroundColor: isSelected ? Colors.green : Colors.grey[200],
-  //         shape: RoundedRectangleBorder(
-  //           borderRadius: BorderRadius.circular(20),
-  //         ),
-  //       ),
-  //       child: Text(label),
-  //     ),
-  //   );
-  // }
+  Widget _buildTabContent(String label) {
+    return ListView(
+      children: [
+        Text(label,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 16),
+        _buildRecipeCard(
+          imagePath: "assets/images/recipe1.png",
+          title: "Traditional spare ribs baked",
+          author: "By Chef John",
+          time: "20 min",
+          rating: "4.0",
+        ),
+        const SizedBox(height: 16),
+        _buildRecipeCard(
+          imagePath: "assets/images/recipe2.png",
+          title: "Spice roasted chicken with flavored rice",
+          author: "By Mark Kelvin",
+          time: "20 min",
+          rating: "4.0",
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRecipeCard({
+    required String imagePath,
+    required String title,
+    required String author,
+    required String time,
+    required String rating,
+  }) {
+    return Card(
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
+            child: Image.asset(
+              imagePath,
+              height: 100,
+              width: 100,
+              fit: BoxFit.cover,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(author, style: const TextStyle(color: AppColors.gray1)),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    const Icon(Icons.access_time,
+                        size: 16, color: AppColors.gray1),
+                    const SizedBox(width: 4),
+                    Text(time, style: const TextStyle(color: AppColors.gray1)),
+                    const Spacer(),
+                    const Icon(Icons.star,
+                        size: 16, color: AppColors.secondary100),
+                    const SizedBox(width: 4),
+                    Text(rating,
+                        style: const TextStyle(color: AppColors.gray1)),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
