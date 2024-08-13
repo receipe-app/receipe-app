@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
           // bloc: context.read<AuthBloc>()..add(CheckToki),
           builder: (context, state) {
             if (state.authStatus == AuthStatus.authenticated) {
-              return const HomeScreen();
+              return HomeScreen();
             } else {
               return const LoginScreen();
             }
