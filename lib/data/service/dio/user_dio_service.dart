@@ -1,8 +1,6 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:receipe_app/core/network/dio_client.dart';
-import 'package:receipe_app/data/model/app_response.dart';
 
 import '../../model/user_model.dart';
 
