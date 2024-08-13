@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:receipe_app/logic/bloc/auth/auth_bloc.dart';
+import 'package:receipe_app/logic/cubit/tab_box/tab_box_cubit.dart';
 import 'package:receipe_app/ui/screens/auth/login_screen.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:receipe_app/ui/screens/home/home_screen.dart';
@@ -14,7 +15,8 @@ void main() {
   runApp(MultiBlocProvider(providers: [
     BlocProvider(
       create: (context) => AuthBloc(authRepository: authenticationRepository),
-    )
+    ),
+    BlocProvider(create: (context) => TabBoxCubit()),
   ], child: const MyApp()));
 }
 
@@ -28,6 +30,7 @@ class MyApp extends StatelessWidget {
       title: 'Authentication Bloc',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: Colors.white,
         textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
       ),
       home: BlocConsumer<AuthBloc, AuthState>(
@@ -49,7 +52,7 @@ class MyApp extends StatelessWidget {
         },
         builder: (context, state) {
           if (state.authStatus == AuthStatus.authenticated) {
-            return const ProfileScreen();
+            return const HomeScreen();
           } else if (state.authStatus == AuthStatus.unauthenticated) {
             return const LoginScreen();
           }
