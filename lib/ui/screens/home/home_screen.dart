@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:receipe_app/core/utils/app_colors.dart';
 import 'package:receipe_app/core/utils/app_icons.dart';
 import 'package:receipe_app/logic/cubit/tab_box/tab_box_cubit.dart';
+import 'package:receipe_app/ui/screens/profile/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,10 +17,10 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _widgets = const [
-    Placeholder(),
+    HomeScreen(),
     FlutterLogo(size: 200),
     Placeholder(),
-    FlutterLogo(size: 200),
+    ProfileScreen(),
   ];
 
   @override
