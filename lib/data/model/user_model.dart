@@ -8,10 +8,12 @@ class UserModel with _$UserModel {
   factory UserModel({
     required String id,
     required String uid,
+    required String imageUrl,
     required String email,
     required List<String> savedRecipesId,
     required List<String> likedRecipesId,
   }) = _UserModel;
 
-  factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
+  factory UserModel.fromJson(Map<String, dynamic> json) =>
+      _$UserModelFromJson(json);
 }
