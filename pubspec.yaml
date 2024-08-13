@@ -45,6 +45,7 @@ dependencies:
     path: packages/authentication_repository
   freezed_annotation: ^2.2.0
   dio: ^5.5.0+1
+  provider: ^6.1.2
 
 dev_dependencies:
   flutter_test:
@@ -75,6 +76,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/fonts/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
