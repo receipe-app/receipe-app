@@ -24,6 +24,8 @@ class UserDioService {
         if (value['email'] == email && value['uid'] == uid) {
           value['id'] = key;
           appResponse.data = UserModel.fromJson(value);
+          appResponse.isSuccess = true;
+          print('object');
           break;
         }
       }
@@ -32,8 +34,11 @@ class UserDioService {
         appResponse.statusCode = e.response?.statusCode;
       }
       appResponse.errorMessage = e.toString();
-      log(e.toString());
+      print(appResponse.errorMessage);
     }
+
+    log(appResponse.errorMessage);
+    log(appResponse.statusCode.toString());
 
     return appResponse;
   }
