@@ -78,4 +78,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(state.copyWith(authStatus: AuthStatus.error, error: e.toString()));
     }
   }
+
+  // void _onCheckTokenExpiry(CheckTokenExpiryEvent event, emit) async {
+  //   emit(LoadingAuthState());
+  //   final user = await _authRepository.checkTokenExpiry();
+  //   if (user != null) {
+  //     emit(AuthenticatedAuthState(user));
+  //   } else {
+  //     emit(UnAuthenticatedAuthState());
+  //   }
+  // }
 }
