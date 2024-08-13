@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:receipe_app/logic/bloc/auth/auth_bloc.dart';
 import 'package:receipe_app/ui/screens/auth/login_screen.dart';
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:receipe_app/ui/screens/home/home_screen.dart';
 import 'package:receipe_app/ui/screens/profile/profile_screen.dart';
 
 void main() {
@@ -24,7 +26,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Authentication Bloc',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
+      ),
       home: BlocConsumer<AuthBloc, AuthState>(
         bloc: context.read<AuthBloc>()..add(const CheckTokenExpiryEvent()),
         listener: (context, state) {
@@ -43,8 +48,6 @@ class MyApp extends StatelessWidget {
           }
         },
         builder: (context, state) {
-          // print(state.error);
-          // print(state);
           if (state.authStatus == AuthStatus.authenticated) {
             return const ProfileScreen();
           } else if (state.authStatus == AuthStatus.unauthenticated) {
