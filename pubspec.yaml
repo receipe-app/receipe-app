@@ -45,6 +45,9 @@ dependencies:
     path: packages/authentication_repository
   freezed_annotation: ^2.2.0
   dio: ^5.5.0+1
+  google_fit: ^0.0.0
+  google_fonts: ^6.2.1
+  animated_bottom_navigation_bar: ^1.3.3
 
 dev_dependencies:
   flutter_test:

@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:receipe_app/core/app.dart';
 import 'package:receipe_app/ui/screens/authentication/splash_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const App());
 }
 
 class MyApp extends StatelessWidget {
@@ -37,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
     try {
       await platform.invokeMethod('pickImage');
     } on PlatformException catch (e) {
-      print("Failed to pick image: '${e.message}'.");
+      log("Failed to pick image: '${e.message}'.");
     }
   }
 
@@ -46,9 +49,8 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     platform.setMethodCallHandler((call) async {
       if (call.method == "imagePicked") {
-        setState(() {
-          _imagePath = call.arguments;
-        });
+        _imagePath = call.arguments;
+        setState(() {});
       }
     });
   }
