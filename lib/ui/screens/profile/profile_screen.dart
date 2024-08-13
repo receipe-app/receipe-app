@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipe_app/core/utils/app_colors.dart';
-import '../../../logic/bloc/auth/auth_bloc.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -35,97 +33,106 @@ class _ProfileScreenState extends State<ProfileScreen>
         centerTitle: true,
         backgroundColor: AppColors.white,
         actions: [
-          IconButton(
-              onPressed: () {
-                context.read<AuthBloc>().add(const AuthEvent.logout());
-              },
-              icon: const Icon(Icons.logout))
+          IconButton(onPressed: () {}, icon: const Icon(Icons.more_horiz))
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const CircleAvatar(
-                  radius: 50,
-                  backgroundImage:
-                      AssetImage("assets/images/default_profile.png"),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const CircleAvatar(
+                      radius: 50,
+                      backgroundImage:
+                          AssetImage("assets/images/default_profile.png"),
+                    ),
+                    _buildInfoColumn('Recipe', '4'),
+                    _buildInfoColumn('Followers', '2.5M'),
+                    _buildInfoColumn('Following', '259'),
+                  ],
                 ),
-                _buildInfoColumn('Recipe', '4'),
-                _buildInfoColumn('Followers', '2.5M'),
-                _buildInfoColumn('Following', '259'),
+                const SizedBox(height: 16),
+                const Text(
+                  'Afuwape Abiodun',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                const Text(
+                  'Chef',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                const Text(
+                  'Private Chef\nPassionate about food and life 🍲🍳🍱',
+                  style: TextStyle(
+                    color: Colors.grey,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TextButton(
+                  onPressed: () {},
+                  child: const Text('More...'),
+                ),
               ],
             ),
-            const SizedBox(height: 16),
-            const Text(
-              'Afuwape Abiodun',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 24,
-              ),
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(25),
             ),
-            const SizedBox(height: 4),
-            const Text(
-              'Chef',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 16,
-              ),
-            ),
-            const SizedBox(height: 4),
-            const Text(
-              'Private Chef\nPassionate about food and life 🍲🍳🍱',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.grey,
-              ),
-            ),
-            const SizedBox(height: 8),
-            TextButton(
-              onPressed: () {},
-              child: const Text('More...'),
-            ),
-            TabBar(
+            child: TabBar(
               controller: _tabController,
               indicator: BoxDecoration(
                 color: AppColors.primary100,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(25),
               ),
+              labelColor: AppColors.white,
+              unselectedLabelColor: AppColors.black,
               tabs: [
-                Tab(child: _buildTabLabel('Liked', 0)),
-                Tab(child: _buildTabLabel('Saved', 1)),
-                Tab(child: _buildTabLabel('Created', 2)),
+                Tab(child: _buildTabLabel('Recipe')),
+                Tab(child: _buildTabLabel('Videos')),
+                Tab(child: _buildTabLabel('Tag')),
               ],
             ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  _buildTabContent('Liked Recipes'),
-                  _buildTabContent('Saved Recipes'),
-                  _buildTabContent('Created Recipes'),
-                ],
-              ),
+          ),
+          const SizedBox(height: 16),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                _buildTabContent(),
+                _buildTabContent(),
+                _buildTabContent(),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildTabLabel(String label, int index) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+  Widget _buildTabLabel(String label) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Text(
         label,
-        style: TextStyle(
-          color: _tabController.index == index ? Colors.white : AppColors.gray1,
+        style: const TextStyle(
           fontWeight: FontWeight.bold,
+          fontSize: 16,
         ),
       ),
     );
@@ -145,19 +152,17 @@ class _ProfileScreenState extends State<ProfileScreen>
         Text(
           label,
           style: const TextStyle(
-            color: AppColors.gray1,
+            color: Colors.grey,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildTabContent(String label) {
+  Widget _buildTabContent() {
     return ListView(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       children: [
-        Text(label,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 16),
         _buildRecipeCard(
           imagePath: "assets/images/recipe1.png",
           title: "Traditional spare ribs baked",
@@ -185,19 +190,44 @@ class _ProfileScreenState extends State<ProfileScreen>
     required String rating,
   }) {
     return Card(
-      child: Row(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(8.0),
-            child: Image.asset(
-              imagePath,
-              height: 100,
-              width: 100,
-              fit: BoxFit.cover,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
+            child: Stack(
+              alignment: Alignment.topRight,
+              children: [
+                Image.asset(
+                  imagePath,
+                  height: 200,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+                Container(
+                  margin: const EdgeInsets.all(8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.star, color: Colors.amber, size: 16),
+                      const SizedBox(width: 4),
+                      Text(rating,
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(width: 16),
-          Expanded(
+          Padding(
+            padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -205,24 +235,17 @@ class _ProfileScreenState extends State<ProfileScreen>
                   title,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: 18,
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text(author, style: const TextStyle(color: AppColors.gray1)),
-                const SizedBox(height: 8),
                 Row(
                   children: [
-                    const Icon(Icons.access_time,
-                        size: 16, color: AppColors.gray1),
-                    const SizedBox(width: 4),
-                    Text(time, style: const TextStyle(color: AppColors.gray1)),
+                    Text(author, style: const TextStyle(color: Colors.grey)),
                     const Spacer(),
-                    const Icon(Icons.star,
-                        size: 16, color: AppColors.secondary100),
+                    const Icon(Icons.access_time, size: 16, color: Colors.grey),
                     const SizedBox(width: 4),
-                    Text(rating,
-                        style: const TextStyle(color: AppColors.gray1)),
+                    Text(time, style: const TextStyle(color: Colors.grey)),
                   ],
                 ),
               ],

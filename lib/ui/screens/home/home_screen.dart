@@ -14,10 +14,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0;
+  final int _selectedIndex = 0;
 
   final List<Widget> _widgets = const [
-    HomeScreen(),
+    Placeholder(),
     FlutterLogo(size: 200),
     Placeholder(),
     ProfileScreen(),
