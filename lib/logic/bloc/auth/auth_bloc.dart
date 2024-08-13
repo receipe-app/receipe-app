@@ -20,12 +20,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<RegisterUserEvent>(_onRegisterUser);
     on<ResetPasswordEvent>(_onResetPassword);
     on<LogoutEvent>(_onLogoutUser);
+    on<CheckTokenExpiryEvent>(_onCheckTokenExpiry);
   }
 
   void _loginUser(LoginUserEvent event, Emitter<AuthState> emit) async {
     emit(state.copyWith(authStatus: AuthStatus.loading));
     try {
       await _authRepository.login(email: event.email, password: event.password);
+      emit(state.copyWith(authStatus: AuthStatus.authenticated));
     } catch (e) {
       emit(state.copyWith(authStatus: AuthStatus.error, error: e.toString()));
     }
@@ -39,6 +41,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         email: event.email,
         password: event.password,
       );
+      emit(state.copyWith(authStatus: AuthStatus.authenticated));
     } catch (e) {
       emit(state.copyWith(authStatus: AuthStatus.error, error: e.toString()));
     }
@@ -48,11 +51,29 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     // _authRepository.resetPassword(email: event.email);
   }
 
+  void _onCheckTokenExpiry(
+    CheckTokenExpiryEvent event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(state.copyWith(authStatus: AuthStatus.loading));
+    try {
+      final user = await _authRepository.checkTokenExpiry();
+      if (user != null) {
+        emit(state.copyWith(authStatus: AuthStatus.authenticated));
+      } else {
+        emit(state.copyWith(authStatus: AuthStatus.unauthenticated));
+      }
+    } catch (e) {
+      emit(state.copyWith(authStatus: AuthStatus.error, error: e.toString()));
+    }
+  }
+
   void _onLogoutUser(LogoutEvent event, Emitter<AuthState> emit) async {
     emit(state.copyWith(authStatus: AuthStatus.loading));
 
     try {
-      log('log out event');
+      _authRepository.clearTokens();
+      emit(state.copyWith(authStatus: AuthStatus.unauthenticated));
     } catch (e) {
       emit(state.copyWith(authStatus: AuthStatus.error, error: e.toString()));
     }

@@ -98,4 +98,9 @@ class AuthenticationRepository {
       jsonEncode(user.toJson()),
     );
   }
+
+  Future<void> clearTokens() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('userData');
+  }
 }

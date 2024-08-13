@@ -13,7 +13,10 @@ class AuthEvent with _$AuthEvent {
     required String password,
   }) = RegisterUserEvent;
 
-  const factory AuthEvent.resetPassword({required String email}) = ResetPasswordEvent;
+  const factory AuthEvent.resetPassword({required String email}) =
+      ResetPasswordEvent;
+
+  const factory AuthEvent.checkTokenExpiry() = CheckTokenExpiryEvent;
 
   const factory AuthEvent.logout() = LogoutEvent;
 }
