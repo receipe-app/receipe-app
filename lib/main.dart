@@ -6,7 +6,6 @@ import 'package:receipe_app/logic/cubit/tab_box/tab_box_cubit.dart';
 import 'package:receipe_app/ui/screens/auth/login_screen.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:receipe_app/ui/screens/home/home_screen.dart';
-import 'package:receipe_app/ui/screens/profile/profile_screen.dart';
 
 void main() {
   final AuthenticationRepository authenticationRepository =
