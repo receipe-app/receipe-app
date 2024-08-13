@@ -89,25 +89,17 @@ class _ProfileScreenState extends State<ProfileScreen>
               onPressed: () {},
               child: const Text('More...'),
             ),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20.0),
-                border: Border.all(color: AppColors.gray1),
+            TabBar(
+              controller: _tabController,
+              indicator: BoxDecoration(
+                color: AppColors.primary100,
+                borderRadius: BorderRadius.circular(20),
               ),
-              child: TabBar(
-                controller: _tabController,
-                indicator: BoxDecoration(
-                  color: AppColors.primary100,
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                labelColor: Colors.white,
-                unselectedLabelColor: AppColors.gray1,
-                tabs: const [
-                  Tab(text: 'Liked'),
-                  Tab(text: 'Saved'),
-                  Tab(text: 'Created'),
-                ],
-              ),
+              tabs: [
+                Tab(child: _buildTabLabel('Liked', 0)),
+                Tab(child: _buildTabLabel('Saved', 1)),
+                Tab(child: _buildTabLabel('Created', 2)),
+              ],
             ),
             const SizedBox(height: 16),
             Expanded(
@@ -121,6 +113,19 @@ class _ProfileScreenState extends State<ProfileScreen>
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTabLabel(String label, int index) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: _tabController.index == index ? Colors.white : AppColors.gray1,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );
