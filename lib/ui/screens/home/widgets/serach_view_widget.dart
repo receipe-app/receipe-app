@@ -1,72 +1,99 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:receipe_app/core/utils/app_colors.dart';
+import 'package:receipe_app/data/model/recipe/recipe.dart';
+import 'package:receipe_app/ui/screens/all_about_recipe/all_about_recipe_screen.dart';
+import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 class SearchDelegateWidget extends SearchDelegate {
-  // List of search data
-  final List<String> searchItems;
+  final List<Recipe> searchItems;
 
   SearchDelegateWidget(this.searchItems);
 
-  // Override the `buildSuggestions` method to show suggestions as the user types
   @override
-  Widget buildSuggestions(BuildContext context) {
-    List<String> suggestions = searchItems.where((item) {
-      return item.toLowerCase().contains(query.toLowerCase());
-    }).toList();
+  Widget buildSuggestions(BuildContext context) => _buildFoundRecipes();
 
-    return ListView.builder(
-      itemCount: suggestions.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          title: Text(suggestions[index]),
-          onTap: () {
-            query = suggestions[index];
-            showResults(context);
-          },
-        );
-      },
-    );
-  }
-
-  // Override the `buildResults` method to show the results based on the search query
   @override
-  Widget buildResults(BuildContext context) {
-    List<String> results = searchItems.where((item) {
-      return item.toLowerCase().contains(query.toLowerCase());
-    }).toList();
+  Widget buildResults(BuildContext context) => _buildFoundRecipes();
 
-    return ListView.builder(
-      itemCount: results.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          title: Text(results[index]),
-          onTap: () {
-            close(context, results[index]); // Return the selected result
-          },
-        );
-      },
-    );
-  }
-
-  // Override the `buildActions` method to show actions for the AppBar (e.g., clear the search query)
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
       IconButton(
         icon: const Icon(Icons.clear),
-        onPressed: () {
-          query = '';
-        },
+        onPressed: () => query = '',
       ),
     ];
   }
 
-  // Override the `buildLeading` method to add a back button or other leading widget in the AppBar
   @override
   Widget buildLeading(BuildContext context) {
     return IconButton(
       icon: const Icon(Icons.arrow_back),
       onPressed: () {
-        close(context, null); // Close the search and return null
+        close(context, null);
+      },
+    );
+  }
+
+  Widget _buildFoundRecipes() {
+    List<Recipe> suggestions = searchItems.where((item) {
+      return item.title.toLowerCase().contains(query.toLowerCase());
+    }).toList();
+
+    return ListView.builder(
+      itemCount: suggestions.length,
+      itemBuilder: (context, index) {
+        return ZoomTapAnimation(
+          onTap: () => Navigator.push(
+            context,
+            CupertinoPageRoute(
+              builder: (context) => AllAboutRecipeScreen(
+                recipe: suggestions[index],
+              ),
+            ),
+          ),
+          child: Container(
+            height: 100,
+            margin: const EdgeInsets.all(10),
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(
+              color: AppColors.primary100.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              children: [
+                Image.network(
+                  suggestions[index].imageUrl,
+                  height: 100,
+                  width: 100,
+                  fit: BoxFit.cover,
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Text(suggestions[index].title),
+                  ),
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    const Text(
+                      'Preporation time',
+                      style: TextStyle(color: Colors.grey, fontSize: 12),
+                    ),
+                    Text(
+                      '${suggestions[index].preparationTime.toString()} minutes',
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
+                const SizedBox(width: 10),
+              ],
+            ),
+          ),
+        );
       },
     );
   }
