@@ -45,7 +45,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
         listener: (context, state) {
           if (state.authStatus == AuthStatus.authenticated) {
             Navigator.of(context).pop();
-
+          } else if (state.authStatus == AuthStatus.error) {
+            showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                title: const Text('Xato'),
+                content:
+                    Text(state.error ?? 'Royxatdan otishda xatolik yuz berdi'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('OK'),
+                  ),
+                ],
+              ),
+            );
           }
         },
         builder: (context, state) {
