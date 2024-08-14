@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipe_app/core/utils/device_screen.dart';
 import 'package:receipe_app/data/service/shared_preference/user_prefs_service.dart';
+import 'package:receipe_app/logic/bloc/auth/auth_bloc.dart';
+import 'package:receipe_app/ui/screens/auth/login_screen.dart';
+import 'package:receipe_app/ui/screens/main/main_screen.dart';
+
+import '../../../core/utils/user_constants.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -13,19 +19,49 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    _collectUserData().then(
+      (value) {
+        _collectUserData().then(
+          (value) {
+            _toTheNextScreen();
+          },
+        );
+      },
+    );
   }
 
-  Future<void> collectUserData() async {
-    // UserConstants.name = UserPrefsService.name;
+  Future<void> _collectUserData() async {
+    await Future.delayed(const Duration(seconds: 2));
+
+    UserConstants.name = await UserPrefsService.name ?? 'null';
+    UserConstants.email = await UserPrefsService.email ?? 'null';
+    UserConstants.imageUrl = await UserPrefsService.imageUrl ?? 'null';
+    UserConstants.likedRecipesId = await UserPrefsService.likedRecipesId ?? [];
+    UserConstants.savedRecipesId = await UserPrefsService.savedRecipesId ?? [];
   }
 
-  void tester (){
-    UserPrefsService.email;
+  Future<void> _toTheNextScreen() async {
+    Navigator.of(context).pushReplacement(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return BlocBuilder<AuthBloc, AuthState>(
+            bloc: context.read<AuthBloc>()
+              ..add(const AuthEvent.checkTokenExpiry()),
+            builder: (context, state) {
+              if (state.authStatus == AuthStatus.authenticated) {
+                return const MainScreen();
+              } else {
+                return const LoginScreen();
+              }
+            },
+          );
+        },
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    tester();
     return Scaffold(
       body: Container(
         height: DeviceScreen.h(context),

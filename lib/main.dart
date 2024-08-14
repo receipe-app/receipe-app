@@ -13,8 +13,7 @@ import 'package:receipe_app/logic/bloc/auth/auth_bloc.dart';
 import 'package:receipe_app/logic/bloc/recipe/recipe_bloc.dart';
 import 'package:receipe_app/logic/bloc/user/user_bloc.dart';
 import 'package:receipe_app/logic/cubit/tab_box/tab_box_cubit.dart';
-import 'package:receipe_app/ui/screens/auth/login_screen.dart';
-import 'package:receipe_app/ui/screens/main/main_screen.dart';
+import 'package:receipe_app/ui/screens/splash/splash_screen.dart';
 import 'package:toastification/toastification.dart';
 
 import 'data/repositories/user_repository.dart' as user;
@@ -22,7 +21,7 @@ import 'data/repositories/user_repository.dart' as user;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await dotenv.load(fileName: '.env');
   final AuthenticationRepository authenticationRepository =
@@ -86,16 +85,7 @@ class MyApp extends StatelessWidget {
             selectionHandleColor: AppColors.primary100,
           ),
         ),
-        home: BlocBuilder<AuthBloc, AuthState>(
-          bloc: context.read<AuthBloc>()..add(const CheckTokenExpiryEvent()),
-          builder: (context, state) {
-            if (state.authStatus == AuthStatus.authenticated) {
-              return const MainScreen();
-            } else {
-              return const LoginScreen();
-            }
-          },
-        ),
+        home: const SplashScreen(),
       ),
     );
   }
