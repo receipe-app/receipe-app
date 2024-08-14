@@ -1,7 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:receipe_app/ui/screens/all_about_recipe/all_about_recipe_screen.dart';
+import 'package:shimmer/shimmer.dart'; // Import the shimmer package
 import 'package:receipe_app/core/utils/app_colors.dart';
+import 'package:receipe_app/core/utils/user_constants.dart';
+import 'package:receipe_app/data/model/models.dart';
 import 'package:receipe_app/logic/bloc/auth/auth_bloc.dart';
+import 'package:receipe_app/logic/bloc/recipe/recipe_bloc.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -34,230 +40,176 @@ class _ProfileScreenState extends State<ProfileScreen>
         backgroundColor: AppColors.primary100,
         actions: [
           IconButton(
-              onPressed: () {
-                context.read<AuthBloc>().add(const AuthEvent.logout());
-              },
-              icon: const Icon(Icons.more_horiz))
+            onPressed: () =>
+                context.read<AuthBloc>().add(const AuthEvent.logout()),
+            icon: const Icon(Icons.logout),
+          )
         ],
       ),
-      body: Column(
-        children: [
-          _buildProfileHeader(),
-          TabBar(
-            controller: _tabController,
-            indicator: BoxDecoration(
-              color: AppColors.primary100,
-              borderRadius: BorderRadius.circular(25),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(UserConstants.name),
+            const Text(
+              'Men yaratgan retseptlar',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-            labelColor: AppColors.white,
-            unselectedLabelColor: AppColors.black,
-            tabs: const [
-              SizedBox(
-                width: 300,
-                child: Tab(
-                  icon: Icon(Icons.restaurant_menu),
-                  text: 'Recipe',
-                ),
+            Expanded(
+              child: BlocBuilder<RecipeBloc, RecipeState>(
+                builder: (context, state) {
+                  if (state is LoadingRecipeState) {
+                    return _buildRecipeGrid(true);
+                  } else if (state is ErrorRecipeState) {
+                    return Center(child: Text(state.errorMessage));
+                  } else if (state is LoadedRecipeState) {
+                    return _buildRecipeGrid(
+                        false, _getUserRecipes(state.recipes));
+                  }
+                  return const SizedBox.shrink();
+                },
               ),
-              SizedBox(
-                width: 300,
-                child: Tab(
-                  icon: Icon(Icons.video_library),
-                  text: 'Videos',
-                ),
-              ),
-              SizedBox(
-                width: 300,
-                child: Tab(
-                  icon: Icon(Icons.tag),
-                  text: 'Tag',
-                ),
-              ),
-            ],
-          ),
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                _buildRecipeGrid(),
-                _buildRecipeGrid(),
-                _buildRecipeGrid(),
-              ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildProfileHeader() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const CircleAvatar(
-                radius: 50,
-                backgroundImage:
-                    AssetImage("assets/images/default_profile.png"),
-                backgroundColor: AppColors.primary100,
-              ),
-              _buildInfoColumn('Recipe', '4'),
-              _buildInfoColumn('Followers', '2.5M'),
-              _buildInfoColumn('Following', '259'),
-            ],
-          ),
-          const SizedBox(height: 16),
-          const Text(
-            'Afuwape Abiodun',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-          ),
-          const Text('Chef',
-              style: TextStyle(color: Colors.grey, fontSize: 16)),
-          const Text(
-            'Private Chef\nPassionate about food and life 🍲🍳🍱',
-            style: TextStyle(color: Colors.grey),
-          ),
-          const SizedBox(height: 8),
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary100,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-            ),
-            child: const Text('Edit Profile'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInfoColumn(String label, String count) {
-    return Column(
-      children: [
-        Text(count,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-        const SizedBox(height: 4),
-        Text(label, style: const TextStyle(color: Colors.grey)),
-      ],
-    );
-  }
-
-  Widget _buildRecipeGrid() {
+  Widget _buildRecipeGrid(bool isLoading, [List<Recipe>? allRecipe]) {
     return GridView.builder(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.only(top: 10),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        childAspectRatio: 0.75,
+        childAspectRatio: 0.7,
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
       ),
-      itemCount: 10,
+      itemCount: isLoading ? 10 : allRecipe!.length,
       itemBuilder: (BuildContext context, int index) {
-        return _buildRecipeCard(
-          imagePath: "assets/images/recipe${index % 2 + 1}.png",
-          title: "Recipe ${index + 1}",
-          author: "By Chef John",
-          time: "20 min",
-          rating: "4.0",
-        );
+        if (isLoading) {
+          return Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+              ),
+            ),
+          );
+        } else {
+          final recipe = allRecipe![index];
+          return _buildRecipeCard(recipe: recipe);
+        }
       },
     );
   }
 
-  Widget _buildRecipeCard({
-    required String imagePath,
-    required String title,
-    required String author,
-    required String time,
-    required String rating,
-  }) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      elevation: 5,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
-            child: Stack(
-              alignment: Alignment.topRight,
-              children: [
-                Image.asset(imagePath,
-                    height: 120, width: double.infinity, fit: BoxFit.cover),
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.star, color: Colors.amber, size: 16),
-                        const SizedBox(width: 4),
-                        Text(rating,
-                            style:
-                                const TextStyle(fontWeight: FontWeight.bold)),
-                      ],
+  Widget _buildRecipeCard({required Recipe recipe}) {
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        CupertinoPageRoute(
+          builder: (context) => AllAboutRecipeScreen(recipe: recipe),
+        ),
+      ),
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        elevation: 5,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(15)),
+              child: Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  Image.network(
+                    recipe.imageUrl,
+                    height: 120,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.star, color: Colors.amber, size: 16),
+                          SizedBox(width: 4),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 14),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis),
-                const SizedBox(height: 4),
-                Text(author,
-                    style: const TextStyle(color: Colors.grey, fontSize: 12),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis),
-                const SizedBox(height: 4),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(Icons.access_time,
-                            size: 14, color: Colors.grey),
-                        const SizedBox(width: 4),
-                        Text(time,
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(recipe.title,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 14),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis),
+                  const SizedBox(height: 4),
+                  const Text('By me',
+                      style: TextStyle(color: Colors.grey, fontSize: 12),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis),
+                  const SizedBox(height: 4),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.access_time,
+                              size: 14, color: Colors.grey),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${recipe.cookingTime} min',
                             style: const TextStyle(
-                                color: Colors.grey, fontSize: 12)),
-                      ],
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.favorite_border,
-                          color: AppColors.primary100, size: 20),
-                      onPressed: () {},
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                    ),
-                  ],
-                ),
-              ],
+                              color: Colors.grey,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.favorite_border,
+                            color: AppColors.primary100, size: 20),
+                        onPressed: () {},
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
+
+  List<Recipe> _getUserRecipes(List<Recipe> allRecipes) => allRecipes
+      .where((element) => element.authorId == UserConstants.uid)
+      .toList();
 }
