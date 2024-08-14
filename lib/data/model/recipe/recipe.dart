@@ -1,53 +1,21 @@
-import 'package:hive/hive.dart';
-import 'package:receipe_app/data/model/recipe/comment.dart';
-import 'package:receipe_app/data/model/recipe/ingredient.dart';
-import 'package:receipe_app/data/model/recipe/instruction.dart';
+import 'comment.dart';
+import 'ingredient.dart';
+import 'instruction.dart';
 
-part 'recipe.g.dart';
-
-@HiveType(typeId: 0)
-class Recipe extends HiveObject {
-  @HiveField(0)
+class Recipe {
   String id;
-
-  @HiveField(1)
   String title;
-
-  @HiveField(2)
   List<Ingredient> ingredients;
-
-  @HiveField(3)
   List<Instruction> instructions;
-
-  @HiveField(4)
-  int preparationTime;
-
-  @HiveField(5)
-  int cookingTime;
-
-  @HiveField(6)
+  int preparationTime; // in minutes
+  int cookingTime; // in minutes
   String cuisineType;
-
-  @HiveField(7)
   String difficultyLevel;
-
-  @HiveField(8)
   String imageUrl;
-
-  @HiveField(9)
-  String authorId;
-
-  @HiveField(10)
+  String authorId; // ID of the user who created the recipe
   DateTime createdAt;
-
-  @HiveField(11)
-  List<String> likedByUserIds;
-
-  @HiveField(12)
-  List<Comment> comments;
-
-  @HiveField(13)
-  bool isSaved;
+  List<String> likedByUserIds; // List of user IDs who liked the recipe
+  List<Comment> comments; // List of comments
 
   Recipe({
     required this.id,
@@ -63,12 +31,11 @@ class Recipe extends HiveObject {
     DateTime? createdAt,
     this.likedByUserIds = const [],
     this.comments = const [],
-    this.isSaved = false,
   }) : createdAt = createdAt ?? DateTime.now();
 
   @override
   String toString() {
-    return 'Recipe{id: $id, title: $title, ingredients: $ingredients, instructions: $instructions, preparationTime: $preparationTime, cookingTime: $cookingTime, cuisineType: $cuisineType, difficultyLevel: $difficultyLevel, imageUrl: $imageUrl, authorId: $authorId, createdAt: $createdAt, likedByUserIds: $likedByUserIds, comments: $comments, isSaved: $isSaved}';
+    return 'Recipe{id: $id, title: $title, ingredients: $ingredients, instructions: $instructions, preparationTime: $preparationTime, cookingTime: $cookingTime, cuisineType: $cuisineType, difficultyLevel: $difficultyLevel, imageUrl: $imageUrl, authorId: $authorId, createdAt: $createdAt, likedByUserIds: $likedByUserIds, comments: $comments}';
   }
 
   Map<String, dynamic> toJson() {
@@ -86,7 +53,6 @@ class Recipe extends HiveObject {
       'createdAt': createdAt,
       'likedByUserIds': likedByUserIds,
       'comments': comments,
-      'isSaved': isSaved,
     };
   }
 
@@ -119,7 +85,6 @@ class Recipe extends HiveObject {
           : (json['comments'] as List<dynamic>)
               .map((e) => Comment.fromJson(e as Map<String, dynamic>))
               .toList(),
-      isSaved: json['isSaved'] as bool? ?? false,
     );
   }
 }

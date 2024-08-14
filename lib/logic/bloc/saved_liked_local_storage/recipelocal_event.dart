@@ -1,4 +1,4 @@
-part of "recipelocal_bloc.dart";
+part of 'recipelocal_bloc.dart';
 
 sealed class RecipelocalEvent {
   const RecipelocalEvent();
@@ -6,8 +6,12 @@ sealed class RecipelocalEvent {
 
 final class SaveRecipeEvent extends RecipelocalEvent {
   final Recipe recipe;
-
   const SaveRecipeEvent(this.recipe);
 }
 
 final class GetSavedRecipesEvent extends RecipelocalEvent {}
+
+class ToggleRecipeSavedEvent extends RecipelocalEvent {
+  final Recipe recipe;
+  ToggleRecipeSavedEvent(this.recipe);
+}
