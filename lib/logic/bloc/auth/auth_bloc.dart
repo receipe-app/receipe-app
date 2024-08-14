@@ -2,6 +2,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:receipe_app/core/utils/user_constants.dart';
 import 'package:receipe_app/data/service/dio/user_dio_service.dart';
 import 'package:receipe_app/data/service/shared_preference/user_prefs_service.dart';
 import '../../../data/model/user_model.dart';
@@ -37,9 +38,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (appResponse.isSuccess && appResponse.errorMessage.isEmpty) {
         final UserModel userModel = appResponse.data;
 
+        UserConstants.saveUserData(userModel: userModel);
+
         await _userPrefsService.updateUserData(user: userModel);
       }
-
       emit(state.copyWith(authStatus: AuthStatus.authenticated));
     } catch (e) {
       emit(state.copyWith(authStatus: AuthStatus.error, error: e.toString()));
@@ -66,6 +68,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       await _userDioService.addUser(user: data);
       await _userPrefsService.updateUserData(user: data);
+      UserConstants.saveUserData(userModel: data);
 
       emit(state.copyWith(authStatus: AuthStatus.authenticated));
     } catch (e) {
@@ -104,14 +107,4 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(state.copyWith(authStatus: AuthStatus.error, error: e.toString()));
     }
   }
-
-  // void _onCheckTokenExpiry(CheckTokenExpiryEvent event, emit) async {
-  //   emit(LoadingAuthState());
-  //   final user = await _authRepository.checkTokenExpiry();
-  //   if (user != null) {
-  //     emit(AuthenticatedAuthState(user));
-  //   } else {
-  //     emit(UnAuthenticatedAuthState());
-  //   }
-  // }
 }
