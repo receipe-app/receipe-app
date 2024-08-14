@@ -17,3 +17,15 @@ final class ErrorRecipeState extends RecipeState {
 
   ErrorRecipeState({required this.errorMessage});
 }
+
+final class RecipeSavedState extends RecipeState {
+  final Recipe recipe;
+
+  RecipeSavedState({required this.recipe});
+}
+
+final class LoadedSavedRecipesState extends RecipeState {
+  final List<Recipe> recipes;
+
+  LoadedSavedRecipesState({required this.recipes});
+}

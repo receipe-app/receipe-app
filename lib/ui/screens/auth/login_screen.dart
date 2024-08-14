@@ -30,6 +30,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _emailController.text = 'test@gmail.com';
+    _passwordController.text = 'test@gmail.com';
     return Scaffold(
       body: SafeArea(
         child: Padding(

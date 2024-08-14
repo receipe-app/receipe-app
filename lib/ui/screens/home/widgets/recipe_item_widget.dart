@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipe_app/core/utils/app_icons.dart';
-import 'package:receipe_app/data/model/models.dart';
+import 'package:receipe_app/data/model/recipe/recipe.dart';
+import 'package:receipe_app/logic/bloc/recipe/recipe_bloc.dart';
 
 class RecipeItemWidget extends StatelessWidget {
   final int index;
@@ -64,7 +66,17 @@ class RecipeItemWidget extends StatelessWidget {
                           ],
                         ),
                         InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            BlocProvider.of<RecipeBloc>(context).add(
+                              SaveRecipeEvent(recipe),
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text("${recipe.title} saved!"),
+                                duration: const Duration(seconds: 2),
+                              ),
+                            );
+                          },
                           splashColor: Colors.blue.withOpacity(0.9),
                           highlightColor: Colors.transparent,
                           child: Container(

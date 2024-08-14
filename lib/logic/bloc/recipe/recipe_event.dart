@@ -18,7 +18,7 @@ final class AddRecipeEvent extends RecipeEvent {
   final String difficultyLevel;
   final File imageFile;
 
-  AddRecipeEvent({
+  const AddRecipeEvent({
     required this.title,
     required this.ingredients,
     required this.instructions,
@@ -29,3 +29,11 @@ final class AddRecipeEvent extends RecipeEvent {
     required this.imageFile,
   });
 }
+
+final class SaveRecipeEvent extends RecipeEvent {
+  final Recipe recipe;
+
+  const SaveRecipeEvent(this.recipe);
+}
+
+final class GetSavedRecipesEvent extends RecipeEvent {}

@@ -38,6 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
             _buildSearchFilterField(),
             const SizedBox(height: 20),
             BlocBuilder<RecipeBloc, RecipeState>(
+              bloc: context.read<RecipeBloc>()..add(const GetRecipesEvent()),
               builder: (context, state) {
                 if (state is LoadingRecipeState) {
                   return const Center(child: CircularProgressIndicator());
