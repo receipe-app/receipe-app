@@ -80,6 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           borderRadius: BorderRadius.circular(15),
                           borderSide: BorderSide.none,
                         ),
+
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -91,6 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
+
                         TextButton(
                           onPressed: () {},
                           child: const Text(
