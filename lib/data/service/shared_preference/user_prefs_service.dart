@@ -27,8 +27,6 @@ class UserPrefsService {
 
     final decodedData = jsonDecode(data) as Map<String, dynamic>;
 
-    decodedData.remove('idToken');
-
     return decodedData[dataName] as String?;
   }
 
@@ -37,6 +35,15 @@ class UserPrefsService {
 
   static Future<String?> get email async =>
       await _getUserByData(dataName: 'email');
+
+  static Future<String?> get name async =>
+      await _getUserByData(dataName: 'name');
+
+  static Future<String?> get imageUrl async =>
+      await _getUserByData(dataName: 'imageUrl');
+
+  static Future<List<String>?> get likedRecipesId async {}
+
 
   //  static Future<String?> get user async => await _getUserByData(dataName: dataName)
 }

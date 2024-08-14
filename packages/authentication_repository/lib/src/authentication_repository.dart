@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -33,7 +34,8 @@ class AuthenticationRepository {
         return user;
       }
 
-      throw (response.data['error']['message']);
+      print(response.data['error ']['message']);
+      throw (response.data['error ']['message']);
     } on DioException catch (e) {
       if (e.response != null) {
         throw (e.response?.data['error']['message'] ?? 'An error occurred');
