@@ -1,21 +1,30 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:receipe_app/core/utils/app_colors.dart';
+import 'package:receipe_app/data/repositories/recipe_repository.dart';
 import 'package:receipe_app/data/service/dio/user_dio_service.dart';
+import 'package:receipe_app/data/service/firebase_recipe_service.dart';
 import 'package:receipe_app/logic/bloc/auth/auth_bloc.dart';
+import 'package:receipe_app/logic/bloc/recipe/recipe_bloc.dart';
 import 'package:receipe_app/logic/bloc/user/user_bloc.dart';
 import 'package:receipe_app/logic/cubit/tab_box/tab_box_cubit.dart';
 import 'package:receipe_app/ui/screens/auth/login_screen.dart';
 import 'package:receipe_app/ui/screens/home/home_screen.dart';
 import 'package:toastification/toastification.dart';
+
 import 'data/repositories/user_repository.dart' as user;
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: '.env');
   final AuthenticationRepository authenticationRepository =
       AuthenticationRepository();
   final UserDioService userDioService = UserDioService();
+
+  final firebaseRecipeService = FirebaseRecipeService();
 
   runApp(
     MultiRepositoryProvider(
@@ -23,6 +32,10 @@ void main() {
         RepositoryProvider(
           create: (context) =>
               user.UserRepository(userDioService: userDioService),
+        ),
+        RepositoryProvider(
+          create: (context) =>
+              RecipeRepository(firebaseRecipeService: firebaseRecipeService),
         )
       ],
       child: MultiBlocProvider(
@@ -37,6 +50,11 @@ void main() {
             ),
           ),
           BlocProvider(create: (context) => TabBoxCubit()),
+          BlocProvider(
+            create: (context) => RecipeBloc(
+              recipeRepository: context.read<RecipeRepository>(),
+            ),
+          )
         ],
         child: const MyApp(),
       ),
