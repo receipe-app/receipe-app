@@ -1,4 +1,5 @@
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -7,6 +8,7 @@ import 'package:receipe_app/core/utils/app_colors.dart';
 import 'package:receipe_app/data/repositories/recipe_repository.dart';
 import 'package:receipe_app/data/service/dio/user_dio_service.dart';
 import 'package:receipe_app/data/service/firebase_recipe_service.dart';
+import 'package:receipe_app/firebase_options.dart';
 import 'package:receipe_app/logic/bloc/auth/auth_bloc.dart';
 import 'package:receipe_app/logic/bloc/recipe/recipe_bloc.dart';
 import 'package:receipe_app/logic/bloc/user/user_bloc.dart';
@@ -19,6 +21,9 @@ import 'data/repositories/user_repository.dart' as user;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   await dotenv.load(fileName: '.env');
   final AuthenticationRepository authenticationRepository =
       AuthenticationRepository();
