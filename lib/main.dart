@@ -13,6 +13,7 @@ import 'package:receipe_app/data/service/firebase_recipe_service.dart';
 import 'package:receipe_app/firebase_options.dart';
 import 'package:receipe_app/logic/bloc/auth/auth_bloc.dart';
 import 'package:receipe_app/logic/bloc/recipe/recipe_bloc.dart';
+import 'package:receipe_app/logic/bloc/saved_liked_local_storage/recipelocal_bloc.dart';
 import 'package:receipe_app/logic/bloc/user/user_bloc.dart';
 import 'package:receipe_app/logic/cubit/tab_box/tab_box_cubit.dart';
 import 'package:receipe_app/ui/screens/splash/splash_screen.dart';
@@ -27,7 +28,6 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await Hive.initFlutter();
-
 
   await dotenv.load(fileName: '.env');
   final Box<Recipe> savedRecipesBox =
@@ -66,6 +66,11 @@ void main() async {
             create: (context) => RecipeBloc(
               savedRecipesBox: savedRecipesBox,
               recipeRepository: context.read<RecipeRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => RecipelocalBloc(
+              savedRecipesBox: savedRecipesBox,
             ),
           )
         ],

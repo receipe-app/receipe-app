@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipe_app/core/utils/app_icons.dart';
 import 'package:receipe_app/data/model/recipe/recipe.dart';
-import 'package:receipe_app/logic/bloc/recipe/recipe_bloc.dart';
+import 'package:receipe_app/logic/bloc/saved_liked_local_storage/recipelocal_bloc.dart';
 
 class RecipeItemWidget extends StatelessWidget {
   final int index;
@@ -24,13 +24,11 @@ class RecipeItemWidget extends StatelessWidget {
           margin: const EdgeInsets.only(top: 80),
           width: 150,
           height: 200,
-          clipBehavior: Clip.none,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             color: const Color(0xffD9D9D9).withOpacity(0.5),
           ),
           child: Stack(
-            clipBehavior: Clip.none,
             children: [
               Padding(
                 padding: const EdgeInsets.all(10.0),
@@ -67,7 +65,7 @@ class RecipeItemWidget extends StatelessWidget {
                         ),
                         InkWell(
                           onTap: () {
-                            BlocProvider.of<RecipeBloc>(context).add(
+                            BlocProvider.of<RecipelocalBloc>(context).add(
                               SaveRecipeEvent(recipe),
                             );
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -91,7 +89,7 @@ class RecipeItemWidget extends StatelessWidget {
                           ),
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:receipe_app/logic/bloc/recipe/recipe_bloc.dart';
+import 'package:receipe_app/logic/bloc/saved_liked_local_storage/recipelocal_bloc.dart';
 
 class SavedRecipes extends StatelessWidget {
   const SavedRecipes({super.key});
@@ -9,9 +9,9 @@ class SavedRecipes extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Saved Recipes')),
-      body: BlocBuilder<RecipeBloc, RecipeState>(
+      body: BlocBuilder<RecipelocalBloc, RecipelocalState>(
         builder: (context, state) {
-          if (state is LoadedSavedRecipesState) {
+          if (state is LoadedLocalSavedRecipesState) {
             if (state.recipes.isEmpty) {
               return const Center(child: Text('No saved recipes'));
             } else {
@@ -71,9 +71,15 @@ class SavedRecipes extends StatelessWidget {
                 },
               );
             }
-          } else {
-            context.read<RecipeBloc>().add(GetSavedRecipesEvent());
+          } else if (state is RecipelocalState ||
+              state is ErroLocalRecipeState) {
+            // Make sure to handle these states appropriately if needed
             return const Center(child: CircularProgressIndicator());
+          } else if (state is ErroLocalRecipeState) {
+            return Center(child: Text('Error: ${state.errorMessage}'));
+          } else {
+            // Handle unexpected states
+            return const Center(child: Text('Unexpected State'));
           }
         },
       ),
