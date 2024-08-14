@@ -1,0 +1,28 @@
+class Instruction {
+  int stepNumber;
+  String description;
+
+  Instruction({
+    required this.stepNumber,
+    required this.description,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'stepNumber': this.stepNumber,
+      'description': this.description,
+    };
+  }
+
+  factory Instruction.fromJson(Map<String, dynamic> json) {
+    return Instruction(
+      stepNumber: json['stepNumber'] as int,
+      description: json['description'] as String,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'Instruction{stepNumber: $stepNumber, description: $description}';
+  }
+}
