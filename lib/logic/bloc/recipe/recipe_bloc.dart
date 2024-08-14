@@ -21,8 +21,6 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
         super(InitialRecipeState()) {
     on<AddRecipeEvent>(_addEvent);
     on<GetRecipesEvent>(_onGetRecipe);
-    on<SaveRecipeEvent>(_onSaveRecipe);
-    on<GetSavedRecipesEvent>(_onGetSavedRecipes);
   }
 
   void _addEvent(AddRecipeEvent event, Emitter<RecipeState> emit) async {
@@ -52,25 +50,10 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
   void _onGetRecipe(GetRecipesEvent event, Emitter<RecipeState> emit) async {
     emit(LoadingRecipeState());
     try {
-      emit(LoadedRecipeState(recipes: await _recipeRepository.fetchRecipes()));
+      final recipes = await _recipeRepository.fetchRecipes();
+      emit(LoadedRecipeState(recipes: recipes));
     } catch (e) {
       emit(ErrorRecipeState(errorMessage: e.toString()));
     }
-  }
-
-  void _onSaveRecipe(SaveRecipeEvent event, Emitter<RecipeState> emit) async {
-    try {
-      await _savedRecipesBox.put(event.recipe.id, event.recipe);
-      emit(RecipeSavedState(recipe: event.recipe));
-    } catch (e) {
-      emit(ErrorRecipeState(
-          errorMessage: 'Failed to save recipe: ${e.toString()}'));
-    }
-  }
-
-  void _onGetSavedRecipes(
-      GetSavedRecipesEvent event, Emitter<RecipeState> emit) {
-    final savedRecipes = _savedRecipesBox.values.toList();
-    emit(LoadedSavedRecipesState(recipes: savedRecipes));
   }
 }

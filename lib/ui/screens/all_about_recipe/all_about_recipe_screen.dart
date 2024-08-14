@@ -8,6 +8,15 @@ class AllAboutRecipeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(onPressed: () {}, icon: const Icon(Icons.favorite))
+        ],
+      ),
+      body: Column(
+        children: [Text(recipe.title)],
+      ),
+    );
   }
 }
