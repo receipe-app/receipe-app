@@ -2,6 +2,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:receipe_app/core/utils/app_colors.dart';
 import 'package:receipe_app/data/service/dio/user_dio_service.dart';
 import 'package:receipe_app/logic/bloc/auth/auth_bloc.dart';
 import 'package:receipe_app/logic/bloc/user/user_bloc.dart';
@@ -56,6 +57,11 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           scaffoldBackgroundColor: Colors.white,
           textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
+          textSelectionTheme: TextSelectionThemeData(
+            cursorColor: AppColors.primary100,
+            selectionColor: AppColors.primary100.withOpacity(0.1),
+            selectionHandleColor: AppColors.primary100,
+          ),
         ),
         home: BlocBuilder<AuthBloc, AuthState>(
           bloc: context.read<AuthBloc>()..add(const CheckTokenExpiryEvent()),
