@@ -14,8 +14,7 @@ import 'package:receipe_app/logic/bloc/auth/auth_bloc.dart';
 import 'package:receipe_app/logic/bloc/recipe/recipe_bloc.dart';
 import 'package:receipe_app/logic/bloc/user/user_bloc.dart';
 import 'package:receipe_app/logic/cubit/tab_box/tab_box_cubit.dart';
-import 'package:receipe_app/ui/screens/auth/login_screen.dart';
-import 'package:receipe_app/ui/screens/main/main_screen.dart';
+import 'package:receipe_app/ui/screens/splash/splash_screen.dart';
 import 'package:toastification/toastification.dart';
 
 import 'data/repositories/user_repository.dart' as user;
