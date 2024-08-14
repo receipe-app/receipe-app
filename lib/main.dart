@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:receipe_app/core/utils/app_colors.dart';
 import 'package:receipe_app/data/repositories/recipe_repository.dart';
 import 'package:receipe_app/data/service/dio/user_dio_service.dart';
@@ -17,6 +19,7 @@ import 'package:receipe_app/logic/cubit/tab_box/tab_box_cubit.dart';
 import 'package:receipe_app/ui/screens/splash/splash_screen.dart';
 import 'package:toastification/toastification.dart';
 
+import 'data/model/recipe/recipe.dart';
 import 'data/repositories/user_repository.dart' as user;
 
 void main() async {
@@ -24,7 +27,12 @@ void main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
+  await Hive.initFlutter();
+
+
   await dotenv.load(fileName: '.env');
+  final Box<Recipe> savedRecipesBox =
+      await Hive.openBox<Recipe>('savedRecipesBox');
   final AuthenticationRepository authenticationRepository =
       AuthenticationRepository();
   final UserDioService userDioService = UserDioService();
@@ -57,6 +65,7 @@ void main() async {
           BlocProvider(create: (context) => TabBoxCubit()),
           BlocProvider(
             create: (context) => RecipeBloc(
+              savedRecipesBox: savedRecipesBox,
               recipeRepository: context.read<RecipeRepository>(),
             ),
           )
@@ -91,7 +100,7 @@ class MyApp extends StatelessWidget {
                   selectionHandleColor: AppColors.primary100,
                 ),
               ),
-              home: const SplashScreen()
+              home: SplashScreen(),
             ),
           );
         });

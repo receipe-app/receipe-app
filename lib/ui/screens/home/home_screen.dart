@@ -6,7 +6,6 @@ import 'package:receipe_app/core/utils/app_icons.dart';
 import 'package:receipe_app/core/utils/device_screen.dart';
 import 'package:receipe_app/core/utils/user_constants.dart';
 import 'package:receipe_app/ui/screens/home/widgets/all_recipes_widget.dart';
-import 'package:receipe_app/ui/screens/home/widgets/recipe_item_widget.dart';
 
 import '../../../logic/bloc/recipe/recipe_bloc.dart';
 import 'widgets/serach_view_widget.dart';
@@ -36,8 +35,9 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 15),
             _buildSearchFilterField(),
             const SizedBox(height: 20),
-            
+
             BlocBuilder<RecipeBloc, RecipeState>(
+              bloc: context.read<RecipeBloc>()..add(const GetRecipesEvent()),
               builder: (context, state) {
                 if (state is LoadingRecipeState) {
                   return const Center(child: CircularProgressIndicator());
