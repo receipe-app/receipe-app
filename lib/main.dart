@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:receipe_app/core/utils/app_colors.dart';
 import 'package:receipe_app/data/repositories/recipe_repository.dart';
@@ -105,7 +104,7 @@ class MyApp extends StatelessWidget {
                   selectionHandleColor: AppColors.primary100,
                 ),
               ),
-              home: SplashScreen(),
+              home: const SplashScreen(),
             ),
           );
         });
