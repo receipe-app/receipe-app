@@ -1,82 +1,81 @@
 package com.example.receipe_app
 
-import android.Manifest
-import android.app.Activity
-import android.content.Intent
-import android.content.pm.PackageManager
+import android.content.ContentValues
+import android.content.Context
 import android.net.Uri
-import android.os.Bundle
+import android.os.Build
 import android.provider.MediaStore
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.annotation.NonNull
 import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import java.io.IOException
+import java.io.OutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
-class MainActivity : FlutterActivity() {
-    private val PERMISSION_REQUEST_CODE = 1
-    private val IMAGE_PICK_CODE = 2
-    private var resultUri: Uri? = null
+class MainActivity: FlutterActivity() {
+    private val CHANNEL = "com.example.receipe_app/save_image"
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
+        super.configureFlutterEngine(flutterEngine)
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
+            if (call.method == "saveImageToGallery") {
+                val imageUriString = call.argument<String>("imageUri")
+                val imageUri = Uri.parse(imageUriString)
+                val savedUri = saveImageToGallery(this, imageUri)
+                if (savedUri != null) {
+                    result.success(savedUri.toString())
+                } else {
+                    result.error("UNAVAILABLE", "Failed to save image.", null)
+                }
+            } else {
+                result.notImplemented()
+            }
+        }
+    }
 
-        // Safely access the binaryMessenger
-        flutterEngine?.dartExecutor?.binaryMessenger?.let { messenger ->
-            MethodChannel(messenger, "com.example.receipe_app/image")
-                .setMethodCallHandler { call, result ->
-                    when (call.method) {
-                        "pickImage" -> {
-                            if (checkPermission()) {
-                                pickImageFromGallery()
-                            } else {
-                                requestPermission()
-                            }
-                        }
-                        else -> result.notImplemented()
+    private fun saveImageToGallery(context: Context, imageUri: Uri): Uri? {
+        val fileName = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val contentValues = ContentValues().apply {
+            put(MediaStore.Images.Media.DISPLAY_NAME, "IMG_$fileName")
+            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis())
+            }
+        }
+
+        val resolver = context.contentResolver
+        var outputStream: OutputStream? = null
+        var imageUriSaved: Uri? = null
+
+        try {
+            val imageCollection = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+            } else {
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            }
+
+            imageUriSaved = resolver.insert(imageCollection, contentValues)
+            imageUriSaved?.let { uri ->
+                outputStream = resolver.openOutputStream(uri)
+                val inputStream = context.contentResolver.openInputStream(imageUri)
+                inputStream?.use { input ->
+                    outputStream?.use { output ->
+                        input.copyTo(output)
                     }
                 }
+                true
+            } ?: false
+        } catch (e: IOException) {
+            e.printStackTrace()
+            false
+        } finally {
+            outputStream?.close()
         }
-    }
 
-    private fun checkPermission(): Boolean {
-        val result = ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        val result1 = ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.READ_EXTERNAL_STORAGE)
-        return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun requestPermission() {
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE),
-            PERMISSION_REQUEST_CODE
-        )
-    }
-
-    private fun pickImageFromGallery() {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        startActivityForResult(intent, IMAGE_PICK_CODE)
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMISSION_REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                pickImageFromGallery()
-            } else {
-                Toast.makeText(applicationContext, "Permission Denied", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == IMAGE_PICK_CODE && resultCode == Activity.RESULT_OK) {
-            resultUri = data?.data
-            flutterEngine?.dartExecutor?.binaryMessenger?.let { messenger ->
-                MethodChannel(messenger, "com.example.receipe_app/image")
-                    .invokeMethod("imagePicked", resultUri.toString())
-            }
-        }
+        return imageUriSaved
     }
 }
