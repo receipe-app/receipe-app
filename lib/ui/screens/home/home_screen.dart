@@ -7,8 +7,6 @@ import 'package:receipe_app/data/service/shared_preference/user_prefs_service.da
 import 'package:receipe_app/logic/cubit/tab_box/tab_box_cubit.dart';
 import 'package:receipe_app/ui/screens/profile/profile_screen.dart';
 
-import '../../../logic/bloc/user/user_bloc.dart';
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 

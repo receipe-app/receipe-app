@@ -41,14 +41,14 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 const SizedBox(height: 40),
                 const Text(
-                  'Hello,',
+                  'Salom,',
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const Text(
-                  'Welcome Back!',
+                  'Xush Kelibsiz!',
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
@@ -68,7 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
+                      return 'Emailingizni kiriting';
                     }
                     return null;
                   },
@@ -78,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: _passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
-                    label: const Text("Enter password"),
+                    label: const Text("Parolni kiriting"),
                     filled: true,
                     fillColor: Colors.grey[200],
                     border: OutlineInputBorder(
@@ -88,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
+                      return 'Parolni kiriting';
                     }
                     return null;
                   },
@@ -98,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: TextButton(
                     onPressed: () {},
                     child: const Text(
-                      'Forgot Password?',
+                      'Parolni unutdingizmi?',
                       style: TextStyle(color: AppColors.secondary100),
                     ),
                   ),
@@ -132,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ? const CircularProgressIndicator(
                                 color: AppColors.white)
                             : const Text(
-                                'Sign In',
+                                'Kirish',
                                 style: TextStyle(
                                   fontSize: 22,
                                   color: AppColors.white,
@@ -149,11 +149,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     text: TextSpan(
                       children: [
                         const TextSpan(
-                            text: "Don't have an account? ",
+                            text: "Hisobingiz yo'qmi? ",
                             style:
                                 TextStyle(fontSize: 20, color: Colors.black)),
                         TextSpan(
-                          text: 'Sign up',
+                          text: 'Ro\'yxatdan o\'tish',
                           style: const TextStyle(
                               color: AppColors.secondary100, fontSize: 20),
                           recognizer: TapGestureRecognizer()
