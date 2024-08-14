@@ -17,10 +17,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
-  bool _acceptTerms = false;
-
   void _register() {
-    if (_formKey.currentState!.validate() && _acceptTerms) {
+    if (_formKey.currentState!.validate()) {
       context.read<AuthBloc>().add(
             AuthEvent.registerUser(
               name: _nameController.text,
@@ -28,11 +26,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               password: _passwordController.text,
             ),
           );
-    } else if (!_acceptTerms) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text("Iltimos, shartlar va qoidalarni qabul qiling")),
-      );
     }
   }
 
@@ -40,7 +33,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ro‘yxatdan o‘tish'),
+        title: const Text('Royxatdan otish'),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
@@ -52,12 +45,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
         listener: (context, state) {
           if (state.authStatus == AuthStatus.authenticated) {
             Navigator.of(context).pop();
+
           }
         },
         builder: (context, state) {
           return SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(24.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -78,9 +72,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         TextFormField(
                           controller: _nameController,
                           decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.grey[200],
                             labelText: 'Ism',
+                            labelStyle: const TextStyle(color: Colors.black),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide.none,
                             ),
                           ),
                           validator: (value) {
@@ -90,13 +88,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             return null;
                           },
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 16),
                         TextFormField(
                           controller: _emailController,
                           decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.grey[200],
                             labelText: 'Email',
+                            labelStyle: const TextStyle(color: Colors.black),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide.none,
                             ),
                           ),
                           validator: (value) {
@@ -106,16 +108,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             return null;
                           },
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 16),
                         TextFormField(
                           controller: _passwordController,
+                          obscureText: true,
                           decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.grey[200],
                             labelText: 'Parol',
+                            labelStyle: const TextStyle(color: Colors.black),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide.none,
                             ),
                           ),
-                          obscureText: true,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Iltimos, parolingizni kiriting';
@@ -123,16 +129,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             return null;
                           },
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 16),
                         TextFormField(
                           controller: _confirmPasswordController,
+                          obscureText: true,
                           decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.grey[200],
                             labelText: 'Parolni tasdiqlang',
+                            labelStyle: const TextStyle(color: Colors.black),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide.none,
                             ),
                           ),
-                          obscureText: true,
                           validator: (value) {
                             if (value != _passwordController.text) {
                               return 'Parollar mos kelmaydi';
@@ -141,7 +151,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           },
                         ),
                         const SizedBox(height: 20),
-
                         const SizedBox(height: 20),
                         state.authStatus == AuthStatus.loading
                             ? const CircularProgressIndicator()
@@ -156,21 +165,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     ),
                                     backgroundColor: AppColors.primary100,
                                   ),
-                                  child: const Text('Ro‘yxatdan o‘tish',
-                                      style: TextStyle(
-                                          fontSize: 22,
-                                          color: AppColors.white,
-                                          fontWeight: FontWeight.bold)),
+                                  child: const Text(
+                                    'Royxatdan otish',
+                                    style: TextStyle(
+                                        fontSize: 22,
+                                        color: AppColors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
                               ),
-                        const SizedBox(height: 20),
-                        const SizedBox(height: 10),
                         const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const Text(
-                              'Allaqachon a’zomisiz?',
+                              'Allaqachon azomisiz?',
                               style: TextStyle(fontSize: 20),
                             ),
                             TextButton(
