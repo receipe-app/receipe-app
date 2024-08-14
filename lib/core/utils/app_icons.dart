@@ -20,4 +20,6 @@ class AppIcons {
   static const String messageInactive = 'assets/icons/messageInactive.svg';
   static const String forwardInactive = 'assets/icons/forwardInactive.svg';
   static const String profileInactive = 'assets/icons/profileInactive.svg';
+
+  static var bookmarksActive;
 }
