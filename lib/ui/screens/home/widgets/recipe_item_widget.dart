@@ -58,7 +58,8 @@ class RecipeItemWidget extends StatelessWidget {
                             ),
                             Text(
                               "${recipe.cookingTime} Mins",
-                              style: const TextStyle(fontWeight: FontWeight.w600),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w600),
                             ),
                           ],
                         ),
