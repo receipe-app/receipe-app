@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:receipe_app/core/utils/app_colors.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
@@ -20,7 +19,7 @@ class CategoryItemWidget extends StatelessWidget {
     return ZoomTapAnimation(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: isTapped ? AppColors.primary100 : AppColors.white,
