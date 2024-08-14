@@ -91,17 +91,7 @@ class MyApp extends StatelessWidget {
                   selectionHandleColor: AppColors.primary100,
                 ),
               ),
-              home: BlocBuilder<AuthBloc, AuthState>(
-                bloc: context.read<AuthBloc>()
-                  ..add(const CheckTokenExpiryEvent()),
-                builder: (context, state) {
-                  if (state.authStatus == AuthStatus.authenticated) {
-                    return const MainScreen();
-                  } else {
-                    return const LoginScreen();
-                  }
-                },
-              ),
+              home: const SplashScreen()
             ),
           );
         });

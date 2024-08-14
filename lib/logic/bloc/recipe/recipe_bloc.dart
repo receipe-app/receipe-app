@@ -17,6 +17,7 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
       : _recipeRepository = recipeRepository,
         super(InitialRecipeState()) {
     on<AddRecipeEvent>(_addEvent);
+    on<GetRecipesEvent>(_onGetRecipe);
   }
 
   void _addEvent(
@@ -41,6 +42,18 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
       );
       existingRecipes.add(newRecipe);
       emit(LoadedRecipeState(recipes: existingRecipes));
+    } catch (e) {
+      emit(ErrorRecipeState(errorMessage: e.toString()));
+    }
+  }
+
+  void _onGetRecipe(
+    GetRecipesEvent event,
+    Emitter<RecipeState> emit,
+  ) async {
+    emit(LoadingRecipeState());
+    try {
+      emit(LoadedRecipeState(recipes: await _recipeRepository.fetchRecipes()));
     } catch (e) {
       emit(ErrorRecipeState(errorMessage: e.toString()));
     }

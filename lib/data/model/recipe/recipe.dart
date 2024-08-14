@@ -60,17 +60,31 @@ class Recipe {
     return Recipe(
       id: json['id'] as String,
       title: json['title'] as String,
-      ingredients: json['ingredients'] as List<Ingredient>,
-      instructions: json['instructions'] as List<Instruction>,
+      ingredients: json['ingredients'] == null
+          ? []
+          : (json['ingredients'] as List<dynamic>)
+              .map((e) => Ingredient.fromJson(e as Map<String, dynamic>))
+              .toList(),
+      instructions: json['instructions'] == null
+          ? []
+          : (json['instructions'] as List<dynamic>)
+              .map((e) => Instruction.fromJson(e as Map<String, dynamic>))
+              .toList(),
       preparationTime: json['preparationTime'] as int,
       cookingTime: json['cookingTime'] as int,
       cuisineType: json['cuisineType'] as String,
       difficultyLevel: json['difficultyLevel'] as String,
       imageUrl: json['imageUrl'] as String,
       authorId: json['authorId'] as String,
-      createdAt: json['createdAt'] as DateTime,
-      likedByUserIds: json['likedByUserIds'] as List<String>,
-      comments: json['comments'] as List<Comment>,
+      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now()),
+      likedByUserIds: json['likedByUserIds'] == null
+          ? []
+          : json['likedByUserIds'] as List<String>,
+      comments: json['comments'] == null
+          ? []
+          : (json['comments'] as List<dynamic>)
+              .map((e) => Comment.fromJson(e as Map<String, dynamic>))
+              .toList(),
     );
   }
 }

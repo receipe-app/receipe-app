@@ -1,8 +1,12 @@
 part of 'recipe_bloc.dart';
 
-sealed class RecipeEvent {}
+sealed class RecipeEvent {
+  const RecipeEvent();
+}
 
-final class GetRecipesEvent extends RecipeEvent {}
+final class GetRecipesEvent extends RecipeEvent {
+  const GetRecipesEvent();
+}
 
 final class AddRecipeEvent extends RecipeEvent {
   final String title;

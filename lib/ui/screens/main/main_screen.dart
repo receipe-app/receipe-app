@@ -30,8 +30,8 @@ class _MainScreenState extends State<MainScreen> {
         return Scaffold(
           body: _widgets[state],
           floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              Navigator.of(context).push(_showAddRecipe());
+            onPressed: () async {
+              // Navigator.of(context).push(_showAddRecipe());
             },
             shape: const CircleBorder(),
             backgroundColor: AppColors.primary100,

@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:receipe_app/core/utils/user_constants.dart';
+import 'package:receipe_app/data/model/app_resposne.dart';
 import 'package:receipe_app/data/service/dio/user_dio_service.dart';
 import 'package:receipe_app/data/service/shared_preference/user_prefs_service.dart';
 import '../../../data/model/user_model.dart';
@@ -31,10 +32,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       final responseUser = await _authRepository.login(
           email: event.email, password: event.password);
-      final appResponse = await _userDioService.getUser(
+
+      final AppResponse appResponse = await _userDioService.getUser(
         uid: responseUser.id,
         email: responseUser.email,
       );
+
       if (appResponse.isSuccess && appResponse.errorMessage.isEmpty) {
         final UserModel userModel = appResponse.data;
 

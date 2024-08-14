@@ -10,4 +10,7 @@ class AppResponse {
     this.isSuccess = false,
     this.errorMessage = '',
   });
+  @override
+  String toString() =>
+      "AppResponse(data: $data, statusCode: $statusCode, isSuccess: $isSuccess, errorMessage: $errorMessage)";
 }

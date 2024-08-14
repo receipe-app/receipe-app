@@ -34,4 +34,7 @@ class RecipeRepository {
       imageFile: imageFile,
     );
   }
+
+  Future<List<Recipe>> fetchRecipes() async =>
+      await _firebaseRecipeService.fetchRecipes();
 }

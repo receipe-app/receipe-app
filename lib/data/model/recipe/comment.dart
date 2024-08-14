@@ -18,7 +18,7 @@ class Comment {
     return {
       'userId': userId,
       'text': text,
-      'createdAt': createdAt,
+      'createdAt': createdAt.toIso8601String(),
     };
   }
 
@@ -26,7 +26,9 @@ class Comment {
     return Comment(
       userId: json['userId'] as String,
       text: json['text'] as String,
-      createdAt: json['createdAt'] as DateTime,
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'] as String)
+          : DateTime.now(),
     );
   }
 }
