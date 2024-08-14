@@ -141,19 +141,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           },
                         ),
                         const SizedBox(height: 20),
-                        Row(
-                          children: [
-                            Checkbox(
-                              value: _acceptTerms,
-                              onChanged: (value) {
-                                setState(() {
-                                  _acceptTerms = value!;
-                                });
-                              },
-                            ),
-                            const Text('Shartlar va qoidalarni qabul qilish'),
-                          ],
-                        ),
+
                         const SizedBox(height: 20),
                         state.authStatus == AuthStatus.loading
                             ? const CircularProgressIndicator()
