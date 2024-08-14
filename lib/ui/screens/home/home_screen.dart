@@ -9,15 +9,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   @override
   void initState() {
     super.initState();
-
   }
 
-  void _functionTester() async{
-  }
+  void _functionTester() async {}
 
   @override
   Widget build(BuildContext context) {
