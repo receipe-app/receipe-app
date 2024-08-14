@@ -17,6 +17,28 @@ class FirebaseRecipeService {
   final String _apiKey = dotenv.get("WEB_API_KEY");
   final _recipeImageStorage = FirebaseStorage.instance;
 
+  Future<List<Recipe>> fetchRecipes() async {
+    final userToken = await _getUserToken();
+
+    final response = await _dioClient.get(url: '/recipes.json?auth=$userToken');
+
+    if (response.statusCode != 200) {
+      final errorData = response.data;
+      throw (errorData['error']);
+    }
+
+    if (response.data == null) return [];
+
+    List<Recipe> allRecipes = [];
+
+    response.data.forEach!((key, value) {
+      value['id'] = key;
+      allRecipes.add(Recipe.fromJson(value as Map<String, dynamic>));
+    });
+
+    return allRecipes;
+  }
+
   Future<Recipe> addRecipe({
     required String title,
     required List<Ingredient> ingredients,
@@ -44,9 +66,9 @@ class FirebaseRecipeService {
           'difficultyLevel': difficultyLevel,
           'imageUrl': imageUrl,
           'authorId': userId,
+          'createdAt': DateTime.now().toString(),
         },
       );
-
       if (response.statusCode != 200) {
         final errorData = response.data;
         throw (errorData['error']);
@@ -111,9 +133,7 @@ class FirebaseRecipeService {
 
     Map<String, dynamic> user = jsonDecode(userData!);
     bool isTokenExpired = DateTime.now().isAfter(
-      DateTime.parse(
-        user['expiresIn'],
-      ),
+      DateTime.parse(user['expiresIn']),
     );
 
     if (isTokenExpired) {

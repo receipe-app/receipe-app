@@ -91,7 +91,7 @@ class MyApp extends StatelessWidget {
                   selectionHandleColor: AppColors.primary100,
                 ),
               ),
-              home: SplashScreen(),
+              home: const SplashScreen()
             ),
           );
         });

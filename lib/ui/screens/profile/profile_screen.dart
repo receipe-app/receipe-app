@@ -33,10 +33,11 @@ class _ProfileScreenState extends State<ProfileScreen>
         title: const Text('Profile', style: TextStyle(color: AppColors.white)),
         backgroundColor: AppColors.primary100,
         actions: [
-
-          IconButton(onPressed: () {
-            context.read<AuthBloc>().add(const AuthEvent.logout());
-          }, icon: const Icon(Icons.more_horiz))
+          IconButton(
+              onPressed: () {
+                context.read<AuthBloc>().add(const AuthEvent.logout());
+              },
+              icon: const Icon(Icons.more_horiz))
         ],
       ),
       body: Column(
@@ -126,7 +127,8 @@ class _ProfileScreenState extends State<ProfileScreen>
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary100,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
+                borderRadius: BorderRadius.circular(20),
+              ),
             ),
             child: const Text('Edit Profile'),
           ),
