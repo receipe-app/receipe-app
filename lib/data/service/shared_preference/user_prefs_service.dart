@@ -16,8 +16,6 @@ class UserPrefsService {
     decodedData['likedRecipesId'] = user.likedRecipesId;
     decodedData['savedRecipesId'] = user.savedRecipesId;
 
-    print(decodedData);
-
     preferences.setString('userData', jsonEncode(decodedData));
   }
 
@@ -29,9 +27,6 @@ class UserPrefsService {
 
     final decodedData = jsonDecode(data) as Map<String, dynamic>;
 
-    decodedData.remove('idToken');
-    print(decodedData);
-
     return decodedData[dataName] as String?;
   }
 
@@ -40,6 +35,41 @@ class UserPrefsService {
 
   static Future<String?> get email async =>
       await _getUserByData(dataName: 'email');
+
+  static Future<String?> get name async =>
+      await _getUserByData(dataName: 'name');
+
+  static Future<String?> get imageUrl async =>
+      await _getUserByData(dataName: 'imageUrl');
+
+  static Future<List?> _getUserByDataList({
+    required String dataName,
+  }) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final data = preferences.getString('userData');
+
+    if (data == null) return [];
+
+    final decodedData = jsonDecode(data) as Map<String, dynamic>;
+
+    return decodedData[dataName] as List?;
+  }
+
+  static Future<List<String>?> get likedRecipesId async {
+    final data = await _getUserByDataList(dataName: 'likedRecipesId');
+
+    if (data == null) return null;
+
+    return List<String>.from(data);
+  }
+
+  static Future<List<String>?> get savedRecipesId async {
+    final data = await _getUserByDataList(dataName: 'savedRecipesId');
+
+    if (data == null) return null;
+
+    return List<String>.from(data);
+  }
 
   //  static Future<String?> get user async => await _getUserByData(dataName: dataName)
 }

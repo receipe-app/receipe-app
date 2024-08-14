@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "604875622337",
+    "firebase_url": "https://recipe-app-exam-default-rtdb.firebaseio.com",
+    "project_id": "recipe-app-exam",
+    "storage_bucket": "recipe-app-exam.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:604875622337:android:57cf5246e4fc90ee439140",
+        "android_client_info": {
+          "package_name": "com.example.receipe_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyQVnVCmbeOV5S0HSauuOVEyeGNh0n814"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

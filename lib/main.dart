@@ -1,20 +1,34 @@
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:receipe_app/core/utils/app_colors.dart';
+import 'package:receipe_app/data/repositories/recipe_repository.dart';
 import 'package:receipe_app/data/service/dio/user_dio_service.dart';
+import 'package:receipe_app/data/service/firebase_recipe_service.dart';
+import 'package:receipe_app/firebase_options.dart';
 import 'package:receipe_app/logic/bloc/auth/auth_bloc.dart';
+import 'package:receipe_app/logic/bloc/recipe/recipe_bloc.dart';
 import 'package:receipe_app/logic/bloc/user/user_bloc.dart';
 import 'package:receipe_app/logic/cubit/tab_box/tab_box_cubit.dart';
-import 'package:receipe_app/ui/screens/auth/login_screen.dart';
-import 'package:receipe_app/ui/screens/home/home_screen.dart';
+import 'package:receipe_app/ui/screens/splash/splash_screen.dart';
 import 'package:toastification/toastification.dart';
+
 import 'data/repositories/user_repository.dart' as user;
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  await dotenv.load(fileName: '.env');
   final AuthenticationRepository authenticationRepository =
       AuthenticationRepository();
   final UserDioService userDioService = UserDioService();
+
+  final firebaseRecipeService = FirebaseRecipeService();
 
   runApp(
     MultiRepositoryProvider(
@@ -22,6 +36,10 @@ void main() {
         RepositoryProvider(
           create: (context) =>
               user.UserRepository(userDioService: userDioService),
+        ),
+        RepositoryProvider(
+          create: (context) =>
+              RecipeRepository(firebaseRecipeService: firebaseRecipeService),
         )
       ],
       child: MultiBlocProvider(
@@ -36,6 +54,11 @@ void main() {
             ),
           ),
           BlocProvider(create: (context) => TabBoxCubit()),
+          BlocProvider(
+            create: (context) => RecipeBloc(
+              recipeRepository: context.read<RecipeRepository>(),
+            ),
+          )
         ],
         child: const MyApp(),
       ),
@@ -56,17 +79,13 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           scaffoldBackgroundColor: Colors.white,
           textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
+          textSelectionTheme: TextSelectionThemeData(
+            cursorColor: AppColors.primary100,
+            selectionColor: AppColors.primary100.withOpacity(0.1),
+            selectionHandleColor: AppColors.primary100,
+          ),
         ),
-        home: BlocBuilder<AuthBloc, AuthState>(
-          bloc: context.read<AuthBloc>()..add(const CheckTokenExpiryEvent()),
-          builder: (context, state) {
-            if (state.authStatus == AuthStatus.authenticated) {
-              return const HomeScreen();
-            } else {
-              return const LoginScreen();
-            }
-          },
-        ),
+        home: const SplashScreen(),
       ),
     );
   }

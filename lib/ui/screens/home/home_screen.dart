@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:receipe_app/core/utils/app_colors.dart';
 import 'package:receipe_app/core/utils/app_icons.dart';
-import 'package:receipe_app/data/service/shared_preference/user_prefs_service.dart';
-import 'package:receipe_app/logic/cubit/tab_box/tab_box_cubit.dart';
-import 'package:receipe_app/ui/screens/profile/profile_screen.dart';
+import 'package:receipe_app/core/utils/device_screen.dart';
+import 'package:receipe_app/core/utils/user_constants.dart';
+
+import 'widgets/serach_view_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,85 +15,104 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final List<Widget> _widgets = const [
-    Placeholder(),
-    FlutterLogo(size: 200),
-    Placeholder(),
-    ProfileScreen(),
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  void getUserData() async {
-    final String? userEmail = await UserPrefsService.email;
-    print(userEmail);
-  }
-
   @override
   Widget build(BuildContext context) {
-    getUserData();
-    return BlocBuilder<TabBoxCubit, int>(
-      builder: (context, state) {
-        return Scaffold(
-          body: _widgets[state],
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {},
-            shape: const CircleBorder(),
-            backgroundColor: AppColors.primary100,
-            child: const Icon(Icons.add, color: Colors.white),
-          ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
-          bottomNavigationBar: Container(
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
-                  spreadRadius: 0,
-                  blurRadius: 10,
-                  offset: const Offset(0, -3),
-                ),
-              ],
+    return SafeArea(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildAppBar(),
+          const SizedBox(height: 15),
+          _buildSearchFilterField(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAppBar() => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Salom, ${UserConstants.name}!",
+              style: const TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 14,
+              ),
             ),
-            child: BottomAppBar(
-              color: Colors.white,
-              shape: const CircularNotchedRectangle(),
-              notchMargin: 8,
-              child: SizedBox(
-                height: 60,
+            Text(
+              'Bugun nima tayyorlamoqchisiz?',
+              style: TextStyle(
+                fontSize: 12.5,
+                color: Colors.grey.withOpacity(0.5),
+              ),
+            ),
+          ],
+        ),
+      );
+
+  Widget _buildSearchFilterField() => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            GestureDetector(
+              onTap: () => showSearch(
+                context: context,
+                delegate: SearchDelegateWidget([
+                  'item1',
+                  'item2',
+                  'item3',
+                  'item4',
+                  'item5',
+                  'item6',
+                  'item7',
+                  'item8',
+                  'item9',
+                ]),
+              ),
+              child: Container(
+                width: DeviceScreen.w(context) / 1.5,
+                height: 50,
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.grey),
+                ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildNavItem(AppIcons.homeInactive, 0, state),
-                    _buildNavItem(AppIcons.bookmarksInactive, 1, state),
-                    const SizedBox(width: 40),
-                    _buildNavItem(AppIcons.notificationInactive, 2, state),
-                    _buildNavItem(AppIcons.profileInactive, 3, state),
+                    SvgPicture.asset(
+                      AppIcons.searchInactive,
+                      colorFilter: const ColorFilter.mode(
+                        Colors.grey,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    const Text(
+                      'Retsept qidirish',
+                      style: TextStyle(color: Colors.grey),
+                    ),
                   ],
                 ),
               ),
             ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildNavItem(String assetName, int index, int selectedIndex) {
-    return IconButton(
-      icon: SvgPicture.asset(
-        assetName,
-        colorFilter: ColorFilter.mode(
-          selectedIndex == index
-              ? AppColors.primary100
-              : const Color(0xFF797979),
-          BlendMode.srcIn,
+            Container(
+              height: 50,
+              width: 50,
+              decoration: BoxDecoration(
+                color: AppColors.primary100,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Center(
+                child: Icon(
+                  Icons.filter_9_plus,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
         ),
-      ),
-      onPressed: () => context.read<TabBoxCubit>().changeIndex(index),
-    );
-  }
+      );
 }
