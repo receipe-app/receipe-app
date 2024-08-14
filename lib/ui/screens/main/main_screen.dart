@@ -6,6 +6,7 @@ import 'package:receipe_app/core/utils/app_icons.dart';
 import 'package:receipe_app/logic/cubit/tab_box/tab_box_cubit.dart';
 import 'package:receipe_app/ui/screens/home/home_screen.dart';
 import 'package:receipe_app/ui/screens/profile/profile_screen.dart';
+import 'package:receipe_app/ui/widgets/add_recipe.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -29,7 +30,9 @@ class _MainScreenState extends State<MainScreen> {
         return Scaffold(
           body: _widgets[state],
           floatingActionButton: FloatingActionButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(_showAddRecipe());
+            },
             shape: const CircleBorder(),
             backgroundColor: AppColors.primary100,
             child: const Icon(Icons.add, color: Colors.white),
@@ -85,4 +88,23 @@ class _MainScreenState extends State<MainScreen> {
       onPressed: () => context.read<TabBoxCubit>().changeIndex(index),
     );
   }
+}
+
+Route _showAddRecipe() {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) =>
+        const AddRecipeScreen(),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(0.0, 1.0);
+      const end = Offset.zero;
+      const curve = Curves.ease;
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
+  );
 }

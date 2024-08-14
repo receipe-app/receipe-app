@@ -15,7 +15,9 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
 
   RecipeBloc({required RecipeRepository recipeRepository})
       : _recipeRepository = recipeRepository,
-        super(InitialRecipeState()) {}
+        super(InitialRecipeState()) {
+    on<AddRecipeEvent>(_addEvent);
+  }
 
   void _addEvent(
     AddRecipeEvent event,

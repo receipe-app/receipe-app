@@ -2,11 +2,14 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:receipe_app/core/utils/extensions/sizedbox_extension.dart';
 
 import '../../data/model/models.dart';
+import '../../logic/bloc/recipe/recipe_bloc.dart';
 
 class AddRecipeScreen extends StatefulWidget {
   const AddRecipeScreen({super.key});
@@ -30,7 +33,6 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
   final List<String> _directions = [];
 
   File? imageFile;
-
 
   @override
   Widget build(BuildContext context) {
@@ -146,13 +148,34 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
                                   _formKey.currentState!.save();
 
                                   // Extract and validate ingredient data
-                                  if (_ingredients.any((ingredient) => ingredient.name.isEmpty)) {
+                                  if (_ingredients.any((ingredient) =>
+                                      ingredient.name.isEmpty)) {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Please fill in all ingredient fields.')),
+                                      const SnackBar(
+                                          content: Text(
+                                              'Please fill in all ingredient fields.')),
                                     );
                                     return;
                                   }
 
+                                  context.read<RecipeBloc>().add(AddRecipeEvent(
+                                        title: _title,
+                                        ingredients: _ingredients,
+                                        instructions: _directions
+                                            .map((desc) => Instruction(
+                                                  stepNumber: _directions
+                                                          .indexOf(desc) +
+                                                      1,
+                                                  description: desc,
+                                                ))
+                                            .toList(),
+                                        preparationTime: _prepTime,
+                                        cookingTime: _cookTime,
+                                        cuisineType: _type,
+                                        difficultyLevel: _difficulty,
+                                        imageFile: imageFile!,
+                                      ));
+                                  Navigator.pop(context);
                                   /*recipeService.addEvent(
                                     title: _title,
                                     ingredients: _ingredients,
@@ -198,35 +221,35 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
 
   /// INPUT TITLE AND IMAGE
   Widget _buildTitleStep() {
-    // void openGallery() async {
-    //   final imagePicker = ImagePicker();
-    //   final XFile? pickedImage = await imagePicker.pickImage(
-    //     source: ImageSource.gallery,
-    //     imageQuality: 50,
-    //     requestFullMetadata: false,
-    //   );
-    //
-    //   if (pickedImage != null) {
-    //     setState(() {
-    //       imageFile = File(pickedImage.path);
-    //     });
-    //   }
-    // }
-    //
-    // void openCamera() async {
-    //   final imagePicker = ImagePicker();
-    //   final XFile? pickedImage = await imagePicker.pickImage(
-    //     source: ImageSource.camera,
-    //     imageQuality: 50,
-    //     requestFullMetadata: false,
-    //   );
-    //
-    //   if (pickedImage != null) {
-    //     setState(() {
-    //       imageFile = File(pickedImage.path);
-    //     });
-    //   }
-    // }
+    void openGallery() async {
+      final imagePicker = ImagePicker();
+      final XFile? pickedImage = await imagePicker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 50,
+        requestFullMetadata: false,
+      );
+
+      if (pickedImage != null) {
+        setState(() {
+          imageFile = File(pickedImage.path);
+        });
+      }
+    }
+
+    void openCamera() async {
+      final imagePicker = ImagePicker();
+      final XFile? pickedImage = await imagePicker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 50,
+        requestFullMetadata: false,
+      );
+
+      if (pickedImage != null) {
+        setState(() {
+          imageFile = File(pickedImage.path);
+        });
+      }
+    }
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 30.w),
@@ -257,65 +280,67 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
             ),
           ),
           15.height,
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(vertical: 20.h),
-            decoration: BoxDecoration(
-                color: const Color(0xffA9DDDC),
-                borderRadius: BorderRadius.circular(10.r)),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Upload your recipe photo'),
-                  20.height,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      InkWell(
-                        //onTap: openCamera,
-                        borderRadius: BorderRadius.circular(20),
-                        child: Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          alignment: Alignment.center,
-                          child: Column(
-                            children: [
-                              const Icon(CupertinoIcons.camera, size: 30),
-                              6.height,
-                              const Text("From Camera"),
-                            ],
-                          ),
+          imageFile == null
+              ? Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(vertical: 20.h),
+                  decoration: BoxDecoration(
+                      color: const Color(0xffA9DDDC),
+                      borderRadius: BorderRadius.circular(10.r)),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text('Upload your recipe photo'),
+                        20.height,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            InkWell(
+                              onTap: openCamera,
+                              borderRadius: BorderRadius.circular(20),
+                              child: Container(
+                                padding: const EdgeInsets.all(20),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                alignment: Alignment.center,
+                                child: Column(
+                                  children: [
+                                    const Icon(CupertinoIcons.camera, size: 30),
+                                    6.height,
+                                    const Text("From Camera"),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            InkWell(
+                              onTap: openGallery,
+                              borderRadius: BorderRadius.circular(20),
+                              child: Container(
+                                padding: const EdgeInsets.all(20),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                alignment: Alignment.center,
+                                child: Column(
+                                  children: [
+                                    const Icon(Icons.image_outlined, size: 30),
+                                    6.height,
+                                    const Text("From Gallery"),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      InkWell(
-                        //onTap: openGallery,
-                        borderRadius: BorderRadius.circular(20),
-                        child: Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          alignment: Alignment.center,
-                          child: Column(
-                            children: [
-                              const Icon(Icons.image_outlined, size: 30),
-                              6.height,
-                              const Text("From Gallery"),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ],
-              ),
-            ),
-          ),
+                )
+              : Image.file(imageFile!, height: 200),
         ],
       ),
     );
@@ -341,11 +366,8 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
             });
           }),
           const SizedBox(height: 16.0),
-          _buildTimeInput('Cooking Time (minute)', _cookTime, (value) {
-            setState(() {
-              _cookTime = value;
-            });
-          }),
+          _buildTimeInput('Cooking Time (minute)', _cookTime,
+              (value) => setState(() => _cookTime = value)),
           const SizedBox(height: 16.0),
 
           /// DIFFICULTY
@@ -428,13 +450,10 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
               },
               icon: const Icon(Icons.remove),
               color: Colors.black,
-              padding: const EdgeInsets.all(16.0),
-              constraints: const BoxConstraints(),
-              splashRadius: 24.0,
+              padding: EdgeInsets.all(12.r),
             ),
             Container(
-              width: 60,
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 8),
               decoration: BoxDecoration(
                 color: Colors.blueGrey[50],
                 borderRadius: BorderRadius.circular(12.0),
@@ -452,9 +471,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
               },
               icon: const Icon(Icons.add),
               color: Colors.black,
-              padding: const EdgeInsets.all(16.0),
-              constraints: const BoxConstraints(),
-              splashRadius: 24.0,
+              padding: EdgeInsets.all(12.r),
             ),
           ],
         ),
@@ -466,14 +483,13 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
   Widget _buildIngredientsStep() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: ListView(
         children: [
           Text(
             'Ingredients',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           const SizedBox(height: 24.0),
           Column(
@@ -561,9 +577,9 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
                         ),
                         items: ['g', 'kg', 'ml', 'l', 'cup', 'tbsp', 'tsp']
                             .map((label) => DropdownMenuItem(
-                          value: label,
-                          child: Text(label),
-                        ))
+                                  value: label,
+                                  child: Text(label),
+                                ))
                             .toList(),
                         onChanged: (value) {
                           setState(() {
@@ -609,8 +625,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
   Widget _buildDirectionsStep() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: ListView(
         children: [
           Text(
             'Directions',
