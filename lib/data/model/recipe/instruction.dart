@@ -9,8 +9,8 @@ class Instruction {
 
   Map<String, dynamic> toJson() {
     return {
-      'stepNumber': this.stepNumber,
-      'description': this.description,
+      'stepNumber': stepNumber,
+      'description': description,
     };
   }
 

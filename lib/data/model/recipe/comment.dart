@@ -16,9 +16,9 @@ class Comment {
 
   Map<String, dynamic> toJson() {
     return {
-      'userId': this.userId,
-      'text': this.text,
-      'createdAt': this.createdAt,
+      'userId': userId,
+      'text': text,
+      'createdAt': createdAt,
     };
   }
 

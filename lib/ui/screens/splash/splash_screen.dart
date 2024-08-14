@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:receipe_app/core/utils/device_screen.dart';
-import 'package:receipe_app/core/utils/user_constants.dart';
 import 'package:receipe_app/data/service/shared_preference/user_prefs_service.dart';
 
 class SplashScreen extends StatefulWidget {
