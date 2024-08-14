@@ -232,6 +232,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
       if (pickedImage != null) {
         setState(() {
           imageFile = File(pickedImage.path);
+          // print(pickedImage.path);
         });
       }
     }

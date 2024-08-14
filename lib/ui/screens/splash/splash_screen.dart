@@ -7,6 +7,7 @@ import 'package:receipe_app/ui/screens/auth/login_screen.dart';
 import 'package:receipe_app/ui/screens/main/main_screen.dart';
 
 import '../../../core/utils/user_constants.dart';
+import '../../../logic/bloc/recipe/recipe_bloc.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
