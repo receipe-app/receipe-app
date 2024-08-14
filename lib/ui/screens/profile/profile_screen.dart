@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipe_app/core/utils/app_colors.dart';
+import 'package:receipe_app/logic/bloc/auth/auth_bloc.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -33,7 +35,9 @@ class _ProfileScreenState extends State<ProfileScreen>
         centerTitle: true,
         backgroundColor: AppColors.white,
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.more_horiz))
+          IconButton(onPressed: () {
+            context.read<AuthBloc>().add(const AuthEvent.logout());
+          }, icon: const Icon(Icons.more_horiz))
         ],
       ),
       body: Column(

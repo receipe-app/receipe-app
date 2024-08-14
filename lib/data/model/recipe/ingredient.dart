@@ -11,9 +11,9 @@ class Ingredient {
 
   Map<String, dynamic> toJson() {
     return {
-      'name': this.name,
-      'quantity': this.quantity,
-      'unit': this.unit,
+      'name': name,
+      'quantity': quantity,
+      'unit': unit,
     };
   }
 

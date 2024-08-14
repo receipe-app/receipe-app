@@ -33,7 +33,7 @@ class AuthenticationRepository {
         return user;
       }
 
-      throw (response.data['error']['message']);
+      throw (response.data['error ']['message']);
     } on DioException catch (e) {
       if (e.response != null) {
         throw (e.response?.data['error']['message'] ?? 'An error occurred');
