@@ -6,6 +6,7 @@ import 'package:receipe_app/core/utils/app_icons.dart';
 import 'package:receipe_app/core/utils/device_screen.dart';
 import 'package:receipe_app/core/utils/user_constants.dart';
 import 'package:receipe_app/ui/screens/home/widgets/all_recipes_widget.dart';
+import 'package:receipe_app/ui/screens/home/widgets/new_recipes_only_widget.dart';
 
 import '../../../logic/bloc/recipe/recipe_bloc.dart';
 import 'widgets/serach_view_widget.dart';
@@ -21,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    context.read<RecipeBloc>().add(const GetRecipesEvent());
   }
 
   @override
@@ -35,7 +37,6 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 15),
             _buildSearchFilterField(),
             const SizedBox(height: 20),
-
             BlocBuilder<RecipeBloc, RecipeState>(
               bloc: context.read<RecipeBloc>()..add(const GetRecipesEvent()),
               builder: (context, state) {
@@ -59,32 +60,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-
-            // BlocBuilder<RecipeBloc, RecipeState>(
-            //   builder: (context, state) {
-            //     if (state is LoadingRecipeState) {
-            //       return const Center(child: CircularProgressIndicator());
-            //     } else if (state is ErrorRecipeState) {
-            //       return Center(child: Text(state.errorMessage));
-            //     } else if (state is LoadedRecipeState) {
-            //       return SizedBox(
-            //         height: 280,
-            //         child: ListView.separated(
-            //           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            //           itemCount: state.recipes.length,
-            //           scrollDirection: Axis.horizontal,
-            //           separatorBuilder: (context, index) =>
-            //               const SizedBox(height: 20.0),
-            //           itemBuilder: (context, index) {
-            //             final recipe = state.recipes[index];
-            //             return RecipeItemWidget(recipe: recipe, index: index);
-            //           },
-            //         ),
-            //       );
-            //     }
-            //     return const SizedBox.shrink();
-            //   },
-            // ),
+            BlocBuilder<RecipeBloc, RecipeState>(
+              builder: (context, state) {
+                if (state is LoadingRecipeState) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is ErrorRecipeState) {
+                  return Center(child: Text(state.errorMessage));
+                } else if (state is LoadedRecipeState) {
+                  return NewRecipesOnlyWidget(recipes: state.recipes);
+                }
+                return const SizedBox.shrink();
+              },
+            ),
           ],
         ),
       ),
@@ -119,46 +106,52 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            GestureDetector(
-              onTap: () => showSearch(
-                context: context,
-                delegate: SearchDelegateWidget([
-                  'item1',
-                  'item2',
-                  'item3',
-                  'item4',
-                  'item5',
-                  'item6',
-                  'item7',
-                  'item8',
-                  'item9',
-                ]),
-              ),
-              child: Container(
-                width: DeviceScreen.w(context) / 1.5,
-                height: 50,
-                padding: const EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.grey),
-                ),
-                child: Row(
-                  children: [
-                    SvgPicture.asset(
-                      AppIcons.searchInactive,
-                      colorFilter: const ColorFilter.mode(
-                        Colors.grey,
-                        BlendMode.srcIn,
+            BlocBuilder<RecipeBloc, RecipeState>(
+              builder: (context, state) {
+                return GestureDetector(
+                  onTap: state is LoadedRecipeState
+                      ? () => showSearch(
+                            context: context,
+                            delegate: SearchDelegateWidget(state.recipes),
+                          )
+                      : null,
+                  child: Container(
+                    width: DeviceScreen.w(context) / 1.5,
+                    height: 50,
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: state is LoadedRecipeState
+                            ? AppColors.primary100
+                            : Colors.grey,
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    const Text(
-                      'Retsept qidirish',
-                      style: TextStyle(color: Colors.grey),
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(
+                          AppIcons.searchInactive,
+                          colorFilter: ColorFilter.mode(
+                            state is LoadedRecipeState
+                                ? AppColors.primary100
+                                : Colors.grey,
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Retsept qidirish',
+                          style: TextStyle(
+                            color: state is LoadedRecipeState
+                                ? AppColors.primary100
+                                : Colors.grey,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             ),
             Container(
               height: 50,

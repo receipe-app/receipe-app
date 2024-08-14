@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:receipe_app/ui/screens/all_about_recipe/all_about_recipe_screen.dart';
 import 'package:receipe_app/ui/screens/home/widgets/category_item_widget.dart';
+import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import '../../../../data/model/recipe/recipe.dart';
 import 'recipe_item_widget.dart';
@@ -38,19 +41,18 @@ class _AllRecipesWidgetState extends State<AllRecipesWidget> {
     _filteredRecipes = widget.recipes;
   }
 
-  void _filterRecipesByName(int index) {
-    _tappedIndex = index;
-    if (index == 0) {
-      _filteredRecipes = widget.recipes;
-    } else {
-      _filteredRecipes = widget.recipes
-          .where((element) =>
-              element.cuisineType.toLowerCase() ==
-              _categoryNamesEn[_tappedIndex].toLowerCase())
-          .toList();
-    }
-    setState(() {});
-  }
+  void _filterRecipesByName(int index) => setState(() {
+        _tappedIndex = index;
+        if (index == 0) {
+          _filteredRecipes = widget.recipes;
+        } else {
+          _filteredRecipes = widget.recipes
+              .where((element) =>
+                  element.cuisineType.toLowerCase() ==
+                  _categoryNamesEn[_tappedIndex].toLowerCase())
+              .toList();
+        }
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -75,16 +77,34 @@ class _AllRecipesWidgetState extends State<AllRecipesWidget> {
         ),
         SizedBox(
           height: 280,
-          child: ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            itemCount: _filteredRecipes.length,
-            scrollDirection: Axis.horizontal,
-            separatorBuilder: (context, index) => const SizedBox(width: 20.0),
-            itemBuilder: (context, index) {
-              final recipe = _filteredRecipes[index];
-              return RecipeItemWidget(recipe: recipe, index: index);
-            },
-          ),
+          child: _filteredRecipes.isNotEmpty
+              ? ListView.separated(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  itemCount: _filteredRecipes.length,
+                  scrollDirection: Axis.horizontal,
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(width: 20.0),
+                  itemBuilder: (context, index) => ZoomTapAnimation(
+                    onTap: () => Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (context) => AllAboutRecipeScreen(
+                              recipe: _filteredRecipes[index]),
+                        ),
+                      ),
+                    child: RecipeItemWidget(
+                        recipe: _filteredRecipes[index], index: index),
+                  ),
+                )
+              : const Center(
+                  child: Text(
+                    'Restsept topilmadi',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
         ),
       ],
     );
