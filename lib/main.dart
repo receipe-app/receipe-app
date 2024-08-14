@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:receipe_app/core/utils/app_colors.dart';
 import 'package:receipe_app/data/repositories/recipe_repository.dart';
@@ -22,7 +23,7 @@ import 'data/repositories/user_repository.dart' as user;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await dotenv.load(fileName: '.env');
   final AuthenticationRepository authenticationRepository =
@@ -72,31 +73,38 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ToastificationWrapper(
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Authentication Bloc',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          scaffoldBackgroundColor: Colors.white,
-          textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
-          textSelectionTheme: TextSelectionThemeData(
-            cursorColor: AppColors.primary100,
-            selectionColor: AppColors.primary100.withOpacity(0.1),
-            selectionHandleColor: AppColors.primary100,
-          ),
-        ),
-        home: BlocBuilder<AuthBloc, AuthState>(
-          bloc: context.read<AuthBloc>()..add(const CheckTokenExpiryEvent()),
-          builder: (context, state) {
-            if (state.authStatus == AuthStatus.authenticated) {
-              return const MainScreen();
-            } else {
-              return const LoginScreen();
-            }
-          },
-        ),
-      ),
-    );
+    return ScreenUtilInit(
+        designSize: const Size(375, 812),
+        ensureScreenSize: true,
+        builder: (context, _) {
+          return ToastificationWrapper(
+            child: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'Authentication Bloc',
+              theme: ThemeData(
+                primarySwatch: Colors.blue,
+                scaffoldBackgroundColor: Colors.white,
+                textTheme:
+                    GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
+                textSelectionTheme: TextSelectionThemeData(
+                  cursorColor: AppColors.primary100,
+                  selectionColor: AppColors.primary100.withOpacity(0.1),
+                  selectionHandleColor: AppColors.primary100,
+                ),
+              ),
+              home: BlocBuilder<AuthBloc, AuthState>(
+                bloc: context.read<AuthBloc>()
+                  ..add(const CheckTokenExpiryEvent()),
+                builder: (context, state) {
+                  if (state.authStatus == AuthStatus.authenticated) {
+                    return const MainScreen();
+                  } else {
+                    return const LoginScreen();
+                  }
+                },
+              ),
+            ),
+          );
+        });
   }
 }
