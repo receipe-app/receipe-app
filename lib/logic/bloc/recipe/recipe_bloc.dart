@@ -19,6 +19,7 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
     on<AddRecipeEvent>(_onAddRecipe);
     on<GetRecipesEvent>(_onGetRecipe);
     on<DeleteRecipeEvent>(_onDeleteRecipe);
+    on<EditRecipe>(_onEditRecipe);
   }
 
   void _onAddRecipe(AddRecipeEvent event, Emitter<RecipeState> emit) async {
@@ -50,6 +51,35 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
     try {
       final recipes = await _recipeRepository.fetchRecipes();
       emit(LoadedRecipeState(recipes: recipes));
+    } catch (e) {
+      emit(ErrorRecipeState(errorMessage: e.toString()));
+    }
+  }
+
+  void _onEditRecipe(event, emit) async {
+    List<Recipe> existingRecipes = [];
+    if (state is LoadedRecipeState) {
+      existingRecipes = (state as LoadedRecipeState).recipes;
+    }
+    emit(LoadingRecipeState());
+    try {
+      await _recipeRepository.editRecipe(
+        id: event.id,
+        newTitle: event.newTitle,
+        newCookingTime: event.newCookingTime,
+        newCuisineType: event.newCuisineType,
+        newDifficultyLevel: event.newDifficultyLevel,
+      );
+
+      for (var existingRecipe in existingRecipes) {
+        if (existingRecipe.id == event.id) {
+          existingRecipe.title = event.newTitle;
+          existingRecipe.cookingTime = event.newCookingTime;
+          existingRecipe.cuisineType = event.newCuisineType;
+          existingRecipe.difficultyLevel = event.newDifficultyLevel;
+        }
+      }
+      emit(LoadedRecipeState(recipes: existingRecipes));
     } catch (e) {
       emit(ErrorRecipeState(errorMessage: e.toString()));
     }
