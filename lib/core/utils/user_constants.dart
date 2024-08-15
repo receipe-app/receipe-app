@@ -1,3 +1,5 @@
+import 'package:receipe_app/data/model/models.dart';
+
 import '../../data/model/user_model.dart';
 
 class UserConstants {
@@ -7,6 +9,8 @@ class UserConstants {
   static String uid = 'null';
   static List<String> savedRecipesId = [];
   static List<String> likedRecipesId = [];
+  // static List<Recipe> savedRecipesModels = [];
+  // static List<Recipe> likedRecipesModels = [];
 
   static saveUserData({required UserModel userModel}) {
     name = userModel.name;

@@ -39,6 +39,8 @@ class _SplashScreenState extends State<SplashScreen> {
     UserConstants.uid = await UserPrefsService.userId ?? 'null';
     UserConstants.likedRecipesId = await UserPrefsService.likedRecipesId ?? [];
     UserConstants.savedRecipesId = await UserPrefsService.savedRecipesId ?? [];
+    // UserConstants.savedRecipesModels =
+    //     await UserPrefsService.savedRecipesModels ?? [];
   }
 
   Future<void> _toTheNextScreen() async {

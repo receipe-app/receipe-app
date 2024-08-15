@@ -65,8 +65,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         imageUrl: 'null',
         name: event.name,
         email: event.email,
-        savedRecipesId: ['savedRecipesId'],
-        likedRecipesId: ['likedRecipesId'],
+        savedRecipesId: [''],
+        likedRecipesId: [''],
       );
 
       await _userDioService.addUser(user: data);
