@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:receipe_app/core/utils/app_icons.dart';
-import 'package:receipe_app/core/utils/user_constants.dart';
 import 'package:receipe_app/data/model/recipe/recipe.dart';
-import 'package:receipe_app/logic/bloc/recipe/recipe_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../logic/bloc/saved_recipe/saved_recipe_bloc.dart';
 
@@ -76,6 +73,7 @@ class _RecipeItemWidgetState extends State<RecipeItemWidget> {
                       builder: (context, state) {
                         /// //////////////////////////////////////////////////////
                         if (state is ErrorSavedRecipeState) {
+                          print('object');
                           print(state.errorMessage);
                         }
                         if (state is LoadedSavedRecipeState) {

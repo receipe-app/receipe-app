@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:receipe_app/logic/bloc/auth/auth_bloc.dart';
 import 'package:receipe_app/logic/bloc/saved_recipe/saved_recipe_bloc.dart';
 
 import '../../../core/utils/app_colors.dart';
-import '../../../logic/bloc/recipe/recipe_bloc.dart';
 import '../all_about_recipe/all_about_recipe_screen.dart';
 
 class SavedRecipes extends StatefulWidget {

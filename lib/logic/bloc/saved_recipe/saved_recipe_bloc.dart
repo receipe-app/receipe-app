@@ -20,12 +20,11 @@ class SavedRecipeBloc extends Bloc<SavedRecipeEvent, SavedRecipeState> {
     on<ToggleSavedRecipeEvent>(_onToggleSavedRecipe);
   }
 
-  void _onGetUserSavedRecipes(
-    GetUserSavedRecipesEvent event,
-    Emitter<SavedRecipeState> emit,
-  ) {
+  void _onGetUserSavedRecipes(GetUserSavedRecipesEvent event,
+      Emitter<SavedRecipeState> emit,) {
     emit(const LoadingSavedRecipeState());
     try {
+      // recipeBox.delete('savedRecipes');
       final List<Recipe> allSavedRecipes = recipeBox.get('savedRecipes') ?? [];
       emit(LoadedSavedRecipeState(recipes: allSavedRecipes));
     } catch (e) {
@@ -56,16 +55,16 @@ class SavedRecipeBloc extends Bloc<SavedRecipeEvent, SavedRecipeState> {
         data.removeAt(index);
       }
 
-      final List<String> dataIdString = [];
+      // final List<String> dataIdString = [];
 
-      for (var each in data) {
-        dataIdString.add(each.id);
-      }
-
-      _userRepository.updateUserData(
-        data: {'savedRecipesId': ['12345t']},
-        userId: await UserPrefsService.uFirebaseId ?? '',
-      );
+      // for (var each in data) {
+      //   dataIdString.add(each.id);
+      // }
+      //
+      // _userRepository.updateUserData(
+      //   data: {'savedRecipesId': ['12345t']},
+      //   userId: await UserPrefsService.uFirebaseId ?? '',
+      // );
 
       recipeBox.put('savedRecipes', data);
       emit(LoadedSavedRecipeState(recipes: data));
