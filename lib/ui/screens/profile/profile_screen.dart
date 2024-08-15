@@ -1,13 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:receipe_app/ui/screens/all_about_recipe/all_about_recipe_screen.dart';
-import 'package:shimmer/shimmer.dart'; // Import the shimmer package
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:receipe_app/core/utils/app_colors.dart';
 import 'package:receipe_app/core/utils/user_constants.dart';
 import 'package:receipe_app/data/model/models.dart';
 import 'package:receipe_app/logic/bloc/auth/auth_bloc.dart';
 import 'package:receipe_app/logic/bloc/recipe/recipe_bloc.dart';
+import 'package:receipe_app/ui/screens/all_about_recipe/all_about_recipe_screen.dart';
+import 'package:receipe_app/ui/widgets/edit_recipe.dart';
+import 'package:shimmer/shimmer.dart'; // Import the shimmer package
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -85,7 +87,7 @@ class _ProfileScreenState extends State<ProfileScreen>
       padding: const EdgeInsets.only(top: 10),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        childAspectRatio: 0.7,
+        childAspectRatio: 1 / 1.5,
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
       ),
@@ -179,24 +181,84 @@ class _ProfileScreenState extends State<ProfileScreen>
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.access_time,
-                              size: 14, color: Colors.grey),
+                          const Icon(
+                            Icons.access_time,
+                            size: 14,
+                            color: Colors.grey,
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             '${recipe.cookingTime} min',
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Colors.grey,
-                              fontSize: 12,
+                              fontSize: 12.sp,
                             ),
                           ),
                         ],
                       ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      /// DELETE RECIPE BUTTON
                       IconButton(
-                        icon: const Icon(Icons.favorite_border,
-                            color: AppColors.primary100, size: 20),
-                        onPressed: () {},
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(),
+                        icon: const Icon(
+                          Icons.delete,
+                          color: AppColors.warning,
+                          size: 20,
+                        ),
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text("Deleting ${recipe.title}"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      context.read<RecipeBloc>().add(
+                                          DeleteRecipeEvent(id: recipe.id));
+                                    },
+                                    child: const Text(
+                                      "Yes, delete it!",
+                                      style: TextStyle(
+                                        color: AppColors.warning,
+                                      ),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text(
+                                      "Cancel",
+                                      style:
+                                          TextStyle(color: AppColors.success),
+                                    ),
+                                  )
+                                ],
+                              );
+                            },
+                          );
+                        },
+                      ),
+
+                      /// EDIT RECIPE BUTTON
+                      IconButton(
+                        icon: const Icon(
+                          Icons.edit,
+                          color: AppColors.primary100,
+                          size: 20,
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                              builder: (context) => EditRecipe(recipe: recipe),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
