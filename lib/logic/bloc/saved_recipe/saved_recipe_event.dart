@@ -10,11 +10,7 @@ final class GetUserSavedRecipesEvent extends SavedRecipeEvent {
 }
 
 final class ToggleSavedRecipeEvent extends SavedRecipeEvent {
-  final String recipeId;
-  final bool isSaved;
+  final Recipe recipe;
 
-  const ToggleSavedRecipeEvent({
-    required this.isSaved,
-    required this.recipeId,
-  });
+  const ToggleSavedRecipeEvent({required this.recipe});
 }

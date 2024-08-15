@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipe_app/ui/screens/all_about_recipe/all_about_recipe_screen.dart';
 import 'package:receipe_app/ui/screens/home/widgets/category_item_widget.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import '../../../../data/model/recipe/recipe.dart';
+import '../../../../logic/bloc/saved_recipe/saved_recipe_bloc.dart';
 import 'recipe_item_widget.dart';
 
 class AllRecipesWidget extends StatefulWidget {
@@ -38,6 +40,7 @@ class _AllRecipesWidgetState extends State<AllRecipesWidget> {
   void initState() {
     super.initState();
     _filteredRecipes = widget.recipes;
+    context.read<SavedRecipeBloc>().add(const GetUserSavedRecipesEvent());
   }
 
   void _filterRecipesByName(int index) => setState(() {

@@ -68,6 +68,22 @@ class UserDioService {
     return appResponse;
   }
 
+  Future<void> updateUserData({
+    required String userId,
+    required Map<String, dynamic> data,
+  }) async {
+    final userToken = await _getUserToken();
+    try {
+      await _dioClient.updateData(
+        url: 'users/$userId.json?auth=$userToken',
+        data: data,
+      );
+    } catch (e) {
+      debugPrint('$e');
+      rethrow;
+    }
+  }
+
   Future<String> _getUserToken() async {
     final prefs = await SharedPreferences.getInstance();
     final userData = prefs.getString("userData");
