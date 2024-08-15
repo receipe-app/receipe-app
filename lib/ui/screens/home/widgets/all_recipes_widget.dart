@@ -92,8 +92,7 @@ class _AllRecipesWidgetState extends State<AllRecipesWidget> {
                         ),
                       ),
                     ),
-                    child: RecipeItemWidget(
-                        recipe: _filteredRecipes[index], index: index),
+                    child: RecipeItemWidget(recipe: _filteredRecipes[index]),
                   ),
                 )
               : const Center(

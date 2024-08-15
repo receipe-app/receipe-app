@@ -1,5 +1,11 @@
+import 'package:hive_flutter/adapters.dart';
+part 'instruction.g.dart';
+
+@HiveType(typeId: 2)
 class Instruction {
+  @HiveField(0)
   int stepNumber;
+  @HiveField(1)
   String description;
 
   Instruction({
