@@ -13,6 +13,7 @@ class UserPrefsService {
     final decodedData = jsonDecode(data) as Map<String, dynamic>;
     decodedData['name'] = user.name;
     decodedData['imageUrl'] = user.imageUrl;
+    decodedData['uFirebaseId'] = user.id;
 
     preferences.setStringList('likedRecipesId', user.likedRecipesId);
     preferences.setStringList('savedRecipesId', user.savedRecipesId);
@@ -39,6 +40,9 @@ class UserPrefsService {
 
   static Future<String?> get name async =>
       await _getUserByData(dataName: 'name');
+
+  static Future<String?> get uFirebaseId async =>
+      await _getUserByData(dataName: 'uFirebaseId');
 
   static Future<String?> get imageUrl async =>
       await _getUserByData(dataName: 'imageUrl');
