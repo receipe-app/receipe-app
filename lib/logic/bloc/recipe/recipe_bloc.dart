@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:bloc/bloc.dart';
-import 'package:hive/hive.dart';
 import 'package:receipe_app/data/repositories/recipe_repository.dart';
 import 'package:receipe_app/data/model/recipe/ingredient.dart';
 import 'package:receipe_app/data/model/recipe/instruction.dart';
@@ -11,13 +10,10 @@ part 'recipe_state.dart';
 
 class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
   final RecipeRepository _recipeRepository;
-  final Box<Recipe> _savedRecipesBox;
 
   RecipeBloc({
     required RecipeRepository recipeRepository,
-    required Box<Recipe> savedRecipesBox,
   })  : _recipeRepository = recipeRepository,
-        _savedRecipesBox = savedRecipesBox,
         super(InitialRecipeState()) {
     on<AddRecipeEvent>(_addEvent);
     on<GetRecipesEvent>(_onGetRecipe);

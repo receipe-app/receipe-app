@@ -6,7 +6,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:path_provider/path_provider.dart'; // Add this import
 import 'package:receipe_app/core/utils/app_colors.dart';
 import 'package:receipe_app/data/repositories/recipe_repository.dart';
 import 'package:receipe_app/data/service/dio/user_dio_service.dart';
@@ -14,7 +13,7 @@ import 'package:receipe_app/data/service/firebase_recipe_service.dart';
 import 'package:receipe_app/firebase_options.dart';
 import 'package:receipe_app/logic/bloc/auth/auth_bloc.dart';
 import 'package:receipe_app/logic/bloc/recipe/recipe_bloc.dart';
-import 'package:receipe_app/logic/bloc/saved_liked_local_storage/recipelocal_bloc.dart';
+import 'package:receipe_app/logic/bloc/saved_recipe/saved_recipe_bloc.dart';
 import 'package:receipe_app/logic/bloc/user/user_bloc.dart';
 import 'package:receipe_app/logic/cubit/tab_box/tab_box_cubit.dart';
 import 'package:receipe_app/ui/screens/splash/splash_screen.dart';
@@ -26,25 +25,13 @@ import 'data/repositories/user_repository.dart' as user;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Firebase initialization
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // Hive initialization
-  final appDocumentDirectory = await getApplicationDocumentsDirectory();
-  Hive.init(appDocumentDirectory.path);
 
-  // Load environment variables
   await dotenv.load(fileName: '.env');
 
   late final Box<Recipe> savedRecipesBox;
 
-  // Open the Hive box
-  try {
-    savedRecipesBox = await Hive.openBox<Recipe>('savedRecipesBox');
-  } catch (e) {
-    print('Error opening Hive box: $e');
-    savedRecipesBox = await Hive.openBox<Recipe>('savedRecipesBox');
-  }
 
   // Create repositories and services
   final AuthenticationRepository authenticationRepository =
@@ -78,15 +65,10 @@ void main() async {
           BlocProvider(create: (context) => TabBoxCubit()),
           BlocProvider(
             create: (context) => RecipeBloc(
-              savedRecipesBox: savedRecipesBox,
               recipeRepository: context.read<RecipeRepository>(),
             ),
           ),
-          BlocProvider(
-            create: (context) => RecipelocalBloc(
-              savedRecipesBox: savedRecipesBox,
-            ),
-          ),
+          BlocProvider(create: (context) => SavedRecipeBloc()),
         ],
         child: const MyApp(),
       ),

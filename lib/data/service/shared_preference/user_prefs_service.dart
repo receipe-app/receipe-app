@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:receipe_app/data/model/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/user_model.dart';
@@ -13,8 +14,9 @@ class UserPrefsService {
     final decodedData = jsonDecode(data) as Map<String, dynamic>;
     decodedData['name'] = user.name;
     decodedData['imageUrl'] = user.imageUrl;
-    decodedData['likedRecipesId'] = user.likedRecipesId;
-    decodedData['savedRecipesId'] = user.savedRecipesId;
+
+    preferences.setStringList('likedRecipesId', user.likedRecipesId);
+    preferences.setStringList('savedRecipesId', user.savedRecipesId);
 
     preferences.setString('userData', jsonEncode(decodedData));
   }
@@ -42,34 +44,26 @@ class UserPrefsService {
   static Future<String?> get imageUrl async =>
       await _getUserByData(dataName: 'imageUrl');
 
-  static Future<List?> _getUserByDataList({
+  static Future<List<String>> _getUserByDataList({
     required String dataName,
   }) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    final data = preferences.getString('userData');
+    final List<String>? data = preferences.getStringList(dataName);
 
     if (data == null) return [];
 
-    final decodedData = jsonDecode(data) as Map<String, dynamic>;
-
-    return decodedData[dataName] as List?;
+    return data;
   }
 
-  static Future<List<String>?> get likedRecipesId async {
-    final data = await _getUserByDataList(dataName: 'likedRecipesId');
-
-    if (data == null) return null;
-
-    return List<String>.from(data);
+  static Future<List<String>> get likedRecipesId async {
+    return await _getUserByDataList(dataName: 'likedRecipesId');
   }
 
-  static Future<List<String>?> get savedRecipesId async {
-    final data = await _getUserByDataList(dataName: 'savedRecipesId');
+  static Future<List<String>?> get savedRecipesId async =>
+      await _getUserByDataList(dataName: 'savedRecipesId');
 
-    if (data == null) return null;
-
-    return List<String>.from(data);
+  static Future<void> setSavedRecipesId(List<String> data) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setStringList('savedRecipesId', data);
   }
-
-  //  static Future<String?> get user async => await _getUserByData(dataName: dataName)
 }
