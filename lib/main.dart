@@ -12,6 +12,7 @@ import 'package:receipe_app/data/service/dio/user_dio_service.dart';
 import 'package:receipe_app/data/service/firebase_recipe_service.dart';
 import 'package:receipe_app/firebase_options.dart';
 import 'package:receipe_app/logic/bloc/auth/auth_bloc.dart';
+import 'package:receipe_app/logic/bloc/liked_recipe/liked_recipe_bloc.dart';
 import 'package:receipe_app/logic/bloc/recipe/recipe_bloc.dart';
 import 'package:receipe_app/logic/bloc/saved_recipe/saved_recipe_bloc.dart';
 import 'package:receipe_app/logic/bloc/user/user_bloc.dart';
@@ -25,7 +26,7 @@ import 'data/model/recipe/instruction.dart';
 import 'data/model/recipe/recipe.dart';
 import 'data/repositories/user_repository.dart' as user;
 
-late Box<List<Recipe>> recipeBox;
+late Box recipeBox;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,7 +42,7 @@ void main() async {
 
   await dotenv.load(fileName: '.env');
 
-  recipeBox = await Hive.openBox<List<Recipe>>('recipes');
+  recipeBox = await Hive.openBox('recipes');
 
   final AuthenticationRepository authenticationRepository =
       AuthenticationRepository();
@@ -82,6 +83,11 @@ void main() async {
               userRepository: context.read<user.UserRepository>(),
             ),
           ),
+          BlocProvider(
+            create: (context) => LikedRecipeBloc(
+              userRepository: context.read<user.UserRepository>(),
+            ),
+          )
         ],
         child: const MyApp(),
       ),

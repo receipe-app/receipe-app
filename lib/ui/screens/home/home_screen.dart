@@ -3,12 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:receipe_app/core/utils/app_colors.dart';
 import 'package:receipe_app/core/utils/app_icons.dart';
-import 'package:receipe_app/core/utils/device_screen.dart';
 import 'package:receipe_app/core/utils/user_constants.dart';
+import 'package:receipe_app/logic/bloc/liked_recipe/liked_recipe_bloc.dart';
 import 'package:receipe_app/ui/screens/home/widgets/all_recipes_widget.dart';
 import 'package:receipe_app/ui/screens/home/widgets/new_recipes_only_widget.dart';
 
 import '../../../logic/bloc/recipe/recipe_bloc.dart';
+import '../../../logic/bloc/saved_recipe/saved_recipe_bloc.dart';
 import 'widgets/serach_view_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -23,6 +24,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     context.read<RecipeBloc>().add(const GetRecipesEvent());
+    context.read<LikedRecipeBloc>().add(const GetUserLikedRecipesEvent());
+    context.read<SavedRecipeBloc>().add(const GetUserSavedRecipesEvent());
   }
 
   @override
@@ -103,58 +106,52 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildSearchFilterField() => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            BlocBuilder<RecipeBloc, RecipeState>(
-              builder: (context, state) {
-                return GestureDetector(
-                  onTap: state is LoadedRecipeState
-                      ? () => showSearch(
-                            context: context,
-                            delegate: SearchDelegateWidget(state.recipes),
-                          )
-                      : null,
-                  child: Container(
-                    width: DeviceScreen.w(context) / 1.5,
-                    height: 50,
-                    padding: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
+        child: BlocBuilder<RecipeBloc, RecipeState>(
+          builder: (context, state) {
+            return GestureDetector(
+              onTap: state is LoadedRecipeState
+                  ? () => showSearch(
+                        context: context,
+                        delegate: SearchDelegateWidget(state.recipes),
+                      )
+                  : null,
+              child: Container(
+                width: double.infinity,
+                height: 50,
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: state is LoadedRecipeState
+                        ? AppColors.primary100
+                        : Colors.grey,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    SvgPicture.asset(
+                      AppIcons.searchInactive,
+                      colorFilter: ColorFilter.mode(
+                        state is LoadedRecipeState
+                            ? AppColors.primary100
+                            : Colors.grey,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      'Retsept qidirish',
+                      style: TextStyle(
                         color: state is LoadedRecipeState
                             ? AppColors.primary100
                             : Colors.grey,
                       ),
                     ),
-                    child: Row(
-                      children: [
-                        SvgPicture.asset(
-                          AppIcons.searchInactive,
-                          colorFilter: ColorFilter.mode(
-                            state is LoadedRecipeState
-                                ? AppColors.primary100
-                                : Colors.grey,
-                            BlendMode.srcIn,
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          'Retsept qidirish',
-                          style: TextStyle(
-                            color: state is LoadedRecipeState
-                                ? AppColors.primary100
-                                : Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-
-          ],
+                  ],
+                ),
+              ),
+            );
+          },
         ),
       );
 }

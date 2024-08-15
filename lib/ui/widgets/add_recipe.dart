@@ -176,8 +176,6 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
                                         imageFile: imageFile!,
                                       ));
                                   Navigator.pop(context);
-                                  print('Recipe Submitted');
-
                                 }
                               }
                             },

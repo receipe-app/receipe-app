@@ -49,7 +49,6 @@ class _EditRecipeState extends State<EditRecipe> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.recipe);
     return Scaffold(
       backgroundColor: const Color(0xffFCFCF7),
       appBar: AppBar(

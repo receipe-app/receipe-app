@@ -20,7 +20,6 @@ class RecipeItemWidget extends StatefulWidget {
 
 class _RecipeItemWidgetState extends State<RecipeItemWidget> {
 
-
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -71,11 +70,6 @@ class _RecipeItemWidgetState extends State<RecipeItemWidget> {
                     ),
                     BlocBuilder<SavedRecipeBloc, SavedRecipeState>(
                       builder: (context, state) {
-                        /// //////////////////////////////////////////////////////
-                        if (state is ErrorSavedRecipeState) {
-                          print('object');
-                          print(state.errorMessage);
-                        }
                         if (state is LoadedSavedRecipeState) {
                           int index = state.recipes.indexWhere(
                               (element) => element.id == widget.recipe.id);
@@ -96,6 +90,10 @@ class _RecipeItemWidgetState extends State<RecipeItemWidget> {
                                     : AppIcons.bookmarksInactive,
                               ),
                             ),
+                          );
+                        } else if (state is ErrorSavedRecipeState) {
+                          return CircleAvatar(
+                            backgroundColor: Colors.grey.withOpacity(0.1),
                           );
                         }
                         return const SizedBox.shrink();
