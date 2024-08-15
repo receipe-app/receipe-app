@@ -1,17 +1,13 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:receipe_app/core/utils/app_colors.dart';
 import 'package:receipe_app/core/utils/app_icons.dart';
-import 'package:receipe_app/data/model/recipe/recipe.dart';
 import 'package:receipe_app/logic/cubit/tab_box/tab_box_cubit.dart';
 import 'package:receipe_app/ui/screens/home/home_screen.dart';
 import 'package:receipe_app/ui/screens/profile/profile_screen.dart';
 import 'package:receipe_app/ui/screens/saved/saved_recipe.dart';
 import 'package:receipe_app/ui/widgets/add_recipe.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -105,7 +101,7 @@ class _MainScreenState extends State<MainScreen> {
           BlendMode.srcIn,
         ),
       ),
-      onPressed: ()  => context.read<TabBoxCubit>().changeIndex(index),
+      onPressed: () => context.read<TabBoxCubit>().changeIndex(index),
     );
   }
 }

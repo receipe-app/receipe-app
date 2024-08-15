@@ -85,12 +85,13 @@ class _AllRecipesWidgetState extends State<AllRecipesWidget> {
                       const SizedBox(width: 20.0),
                   itemBuilder: (context, index) => ZoomTapAnimation(
                     onTap: () => Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                          builder: (context) => AllAboutRecipeScreen(
-                              recipe: _filteredRecipes[index]),
+                      context,
+                      CupertinoPageRoute(
+                        builder: (context) => AllAboutRecipeScreen(
+                          recipe: _filteredRecipes[index],
                         ),
                       ),
+                    ),
                     child: RecipeItemWidget(
                         recipe: _filteredRecipes[index], index: index),
                   ),

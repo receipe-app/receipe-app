@@ -21,7 +21,7 @@ class Recipe {
     required this.id,
     required this.title,
     this.ingredients = const [],
-    this.instructions = const [],
+    this.instructions = const [], 
     this.preparationTime = 0,
     this.cookingTime = 0,
     this.cuisineType = '',
