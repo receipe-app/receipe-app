@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:receipe_app/ui/screens/profile/widgets/recipe_grid.dart';
 import 'package:receipe_app/core/utils/app_colors.dart';
@@ -9,9 +8,6 @@ import 'package:receipe_app/core/utils/user_constants.dart';
 import 'package:receipe_app/data/model/models.dart';
 import 'package:receipe_app/logic/bloc/auth/auth_bloc.dart';
 import 'package:receipe_app/logic/bloc/recipe/recipe_bloc.dart';
-import 'package:receipe_app/ui/screens/all_about_recipe/all_about_recipe_screen.dart';
-import 'package:receipe_app/ui/widgets/edit_recipe.dart';
-import 'package:shimmer/shimmer.dart'; // Import the shimmer package
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -31,7 +27,6 @@ class _ProfileScreenState extends State<ProfileScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    _loadUserData();
   }
 
   @override
@@ -40,15 +35,6 @@ class _ProfileScreenState extends State<ProfileScreen>
     _nameController.dispose();
     super.dispose();
   }
-
-  Future<void> _loadUserData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _nameController.text = prefs.getString('name') ?? 'null';
-      UserConstants.name = _nameController.text;
-      UserConstants.imageUrl = prefs.getString('imageUrl') ?? 'null';
-    });
-  } 
 
   Future<void> _saveUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
