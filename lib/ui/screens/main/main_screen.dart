@@ -19,7 +19,8 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   final List<Widget> _widgets = const [
     HomeScreen(),
-    SavedRecipes(),
+    SavedRecipes(isSavedScreen: true),
+    SavedRecipes(isSavedScreen: false),
     Placeholder(),
     ProfileScreen(),
   ];
@@ -63,7 +64,7 @@ class _MainScreenState extends State<MainScreen> {
                     _buildNavItem(AppIcons.homeInactive, 0, state),
                     _buildNavItem(AppIcons.bookmarksInactive, 1, state),
                     const SizedBox(width: 40),
-                    _buildNavItem(AppIcons.notificationInactive, 2, state),
+                    _buildNavItem('assets/icons/star.svg', 2, state),
                     _buildNavItem(AppIcons.profileInactive, 3, state),
                   ],
                 ),
