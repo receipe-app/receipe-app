@@ -1,9 +1,10 @@
 import 'dart:io';
+
 import 'package:bloc/bloc.dart';
-import 'package:receipe_app/data/repositories/recipe_repository.dart';
 import 'package:receipe_app/data/model/recipe/ingredient.dart';
 import 'package:receipe_app/data/model/recipe/instruction.dart';
 import 'package:receipe_app/data/model/recipe/recipe.dart';
+import 'package:receipe_app/data/repositories/recipe_repository.dart';
 
 part 'recipe_event.dart';
 part 'recipe_state.dart';
@@ -15,11 +16,12 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
     required RecipeRepository recipeRepository,
   })  : _recipeRepository = recipeRepository,
         super(InitialRecipeState()) {
-    on<AddRecipeEvent>(_addEvent);
+    on<AddRecipeEvent>(_onAddRecipe);
     on<GetRecipesEvent>(_onGetRecipe);
+    on<DeleteRecipeEvent>(_onDeleteRecipe);
   }
 
-  void _addEvent(AddRecipeEvent event, Emitter<RecipeState> emit) async {
+  void _onAddRecipe(AddRecipeEvent event, Emitter<RecipeState> emit) async {
     List<Recipe> existingRecipes = [];
     if (state is LoadedRecipeState) {
       existingRecipes = (state as LoadedRecipeState).recipes;
@@ -48,6 +50,22 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
     try {
       final recipes = await _recipeRepository.fetchRecipes();
       emit(LoadedRecipeState(recipes: recipes));
+    } catch (e) {
+      emit(ErrorRecipeState(errorMessage: e.toString()));
+    }
+  }
+
+  void _onDeleteRecipe(
+      DeleteRecipeEvent event, Emitter<RecipeState> emit) async {
+    List<Recipe> existingRecipes = [];
+    if (state is LoadedRecipeState) {
+      existingRecipes = (state as LoadedRecipeState).recipes;
+    }
+    emit(LoadingRecipeState());
+    try {
+      await _recipeRepository.deleteRecipe(id: event.id);
+      existingRecipes.removeWhere((recipe) => recipe.id == event.id);
+      emit(LoadedRecipeState(recipes: existingRecipes));
     } catch (e) {
       emit(ErrorRecipeState(errorMessage: e.toString()));
     }

@@ -25,7 +25,7 @@ import 'data/model/recipe/instruction.dart';
 import 'data/model/recipe/recipe.dart';
 import 'data/repositories/user_repository.dart' as user;
 
-late Box<Recipe> recipeBox;
+late Box<List<Recipe>> recipeBox;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,7 +40,8 @@ void main() async {
   Hive.registerAdapter(CommentAdapter());
 
   await dotenv.load(fileName: '.env');
-  recipeBox = await Hive.openBox<Recipe>('recipes');
+
+  recipeBox = await Hive.openBox<List<Recipe>>('recipes');
 
   final AuthenticationRepository authenticationRepository =
       AuthenticationRepository();
@@ -76,7 +77,11 @@ void main() async {
               recipeRepository: context.read<RecipeRepository>(),
             ),
           ),
-          BlocProvider(create: (context) => SavedRecipeBloc()),
+          BlocProvider(
+            create: (context) => SavedRecipeBloc(
+              userRepository: context.read<user.UserRepository>(),
+            ),
+          ),
         ],
         child: const MyApp(),
       ),

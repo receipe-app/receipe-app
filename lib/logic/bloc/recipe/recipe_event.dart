@@ -29,3 +29,9 @@ final class AddRecipeEvent extends RecipeEvent {
     required this.imageFile,
   });
 }
+
+final class DeleteRecipeEvent extends RecipeEvent {
+  final String id;
+
+  DeleteRecipeEvent({required this.id});
+}

@@ -176,20 +176,8 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
                                         imageFile: imageFile!,
                                       ));
                                   Navigator.pop(context);
-                                  /*recipeService.addEvent(
-                                    title: _title,
-                                    ingredients: _ingredients,
-                                    instructions: _directions.map((desc) => Instruction(
-                                      stepNumber: _directions.indexOf(desc) + 1,
-                                      description: desc,
-                                    )).toList(),
-                                    preparationTime: _prepTime,
-                                    cookingTime: _cookTime,
-                                    cuisineType: _type,
-                                    difficultyLevel: _difficulty,
-                                    imageFile: imageFile!,
-                                  );*/
-                                  // print('Recipe Submitted');
+                                  print('Recipe Submitted');
+
                                 }
                               }
                             },

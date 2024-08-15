@@ -17,4 +17,10 @@ class UserRepository {
 
   Future<AppResponse> addUser({required UserModel user}) async =>
       _userDioService.addUser(user: user);
+
+  Future<void> updateUserData({
+    required String userId,
+    required Map<String, dynamic> data,
+  }) async =>
+      _userDioService.updateUserData(userId: userId, data: data);
 }

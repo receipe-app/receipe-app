@@ -14,10 +14,11 @@ final class LoadingSavedRecipeState extends SavedRecipeState {
 }
 
 final class LoadedSavedRecipeState extends SavedRecipeState {
-  // final List<String> recipesId;
+  final List<Recipe> recipes;
 
-  const LoadedSavedRecipeState();
-  // const LoadedSavedRecipeState({required this.recipes});
+  const LoadedSavedRecipeState({
+    required this.recipes,
+  });
 }
 
 final class ErrorSavedRecipeState extends SavedRecipeState {
