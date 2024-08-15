@@ -33,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
     UserConstants.email = await UserPrefsService.email ?? 'null';
     UserConstants.imageUrl = await UserPrefsService.imageUrl ?? 'null';
     UserConstants.uid = await UserPrefsService.userId ?? 'null';
-    UserConstants.likedRecipesId = await UserPrefsService.likedRecipesId ?? [];
+    UserConstants.likedRecipesId = await UserPrefsService.likedRecipesId;
     UserConstants.savedRecipesId = await UserPrefsService.savedRecipesId ?? [];
   }
 

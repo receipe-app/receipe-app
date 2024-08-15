@@ -1,12 +1,8 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:receipe_app/core/utils/app_icons.dart';
 import 'package:receipe_app/core/utils/user_constants.dart';
 import 'package:receipe_app/data/model/recipe/recipe.dart';
-import 'package:receipe_app/logic/bloc/saved_recipe/saved_recipe_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RecipeItemWidget extends StatefulWidget {
@@ -41,10 +37,6 @@ class _RecipeItemWidgetState extends State<RecipeItemWidget> {
   @override
   Widget build(BuildContext context) {
     bool isSaved = false;
-
-    print('WIDGET_RECIPE ${widget.recipe.id}');
-    print("USER_CONSTANTS_SAVED: ${UserConstants.savedRecipesId}");
-    print('---------------------------------------------------------');
 
     for (var each in UserConstants.savedRecipesId) {
       if (each == widget.recipe.id) {

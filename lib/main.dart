@@ -25,6 +25,8 @@ import 'data/model/recipe/instruction.dart';
 import 'data/model/recipe/recipe.dart';
 import 'data/repositories/user_repository.dart' as user;
 
+late Box<Recipe> recipeBox;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -38,6 +40,7 @@ void main() async {
   Hive.registerAdapter(CommentAdapter());
 
   await dotenv.load(fileName: '.env');
+  recipeBox = await Hive.openBox<Recipe>('recipes');
 
   final AuthenticationRepository authenticationRepository =
       AuthenticationRepository();
