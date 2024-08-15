@@ -2,197 +2,182 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:receipe_app/core/utils/app_colors.dart';
 import 'package:receipe_app/data/model/recipe/recipe.dart';
+import 'package:share_plus/share_plus.dart';
 
 class AllAboutRecipeScreen extends StatelessWidget {
   final Recipe recipe;
 
-  const AllAboutRecipeScreen({super.key, required this.recipe});
+  const AllAboutRecipeScreen({
+    super.key,
+    required this.recipe,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.black54, Colors.transparent],
+            ),
+          ),
+        ),
         leading: IconButton(
-          icon: const Icon(CupertinoIcons.back),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.white),
+          onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
           IconButton(
             onPressed: () {},
-            icon: const Icon(CupertinoIcons.heart),
+            icon: const Icon(Icons.favorite_border, color: AppColors.white),
+          ),
+          IconButton(
+            onPressed: () {
+              _shareRecipe(recipe);
+            },
+            icon: const Icon(
+              CupertinoIcons.share,
+              color: AppColors.white,
+            ),
           ),
         ],
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Image Container with Timer and Rating
-              Container(
-                width: double.infinity,
-                height: 200,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Hero(
+              tag: 'recipeImage${recipe.id}',
+              child: Container(
+                height: 300,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
                   image: DecorationImage(
                     image: NetworkImage(recipe.imageUrl),
                     fit: BoxFit.cover,
                   ),
                 ),
-                child: Stack(
-                  children: [
-                    Positioned(
-                      top: 10,
-                      right: 10,
-                      child: Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.8),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Row(
-                          children: [
-                            Icon(Icons.star, color: Colors.yellow, size: 20),
-                            Text(
-                              "4.8", // You can change this value to dynamic if it's part of your recipe model
-                              style: TextStyle(
-                                color: AppColors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
+                child: Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Colors.transparent, Colors.black54],
+                    ),
+                  ),
+                  child: Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Text(
+                        recipe.title,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                    Positioned(
-                      bottom: 10,
-                      right: 10,
-                      child: Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.8),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.timer, size: 20),
-                            Text(
-                              "${recipe.cookingTime} mins",
-                              style: const TextStyle(
-                                color: AppColors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-              const SizedBox(height: 20),
-              // Recipe Title
-              Text(
-                recipe.title,
-                style:
-                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              // Author Information
-              Row(
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const CircleAvatar(
-                    radius: 20,
-                    backgroundImage: NetworkImage(
-                        'https://via.placeholder.com/150'), // Replace with dynamic author image URL if available
-                  ),
-                  const SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Laura Wilson', // Replace with dynamic author name
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        'Lagos, Nigeria', // Replace with dynamic author location
-                        style: TextStyle(color: Colors.grey.shade600),
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                  _buildCookingTimeWidget(),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Ingredients',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.succes,
                     ),
-                    child: const Text('Follow'),
                   ),
+                  const SizedBox(height: 10),
+                  _buildIngredientsList(),
                 ],
               ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      // Handle ingredient button press
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    child: const Text('Ingredient'),
-                  ),
-                  OutlinedButton(
-                    onPressed: () {
-                      // Handle procedure button press
-                    },
-                    style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    child: const Text('Procedure'),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Ingredients',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              ),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: recipe.ingredients.length,
-                itemBuilder: (context, index) {
-                  final ingredient = recipe.ingredients[index];
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: CircleAvatar(
-                      backgroundColor: Colors.green.shade100,
-                      child: Text(
-                        ingredient.name[0].toUpperCase(),
-                        style: const TextStyle(color: AppColors.black),
-                      ),
-                    ),
-                    title: Text(ingredient.name),
-                    trailing: Text('${ingredient.quantity}g'),
-                  );
-                },
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
+    );
+  }
+
+  void _shareRecipe(Recipe recipe) {
+    String recipeDetails = _formatRecipeForSharing(recipe);
+    Share.share(recipeDetails, subject: "Watch this Recipe ");
+  }
+
+  String _formatRecipeForSharing(Recipe recipe) {
+    StringBuffer buffer = StringBuffer();
+
+    buffer.writeln("Recipe ${recipe.title}");
+    buffer.writeln("Cooking Time ${recipe.preparationTime} minutes");
+    buffer.writeln("Cooling time 2 ${recipe.cookingTime} minutes");
+    buffer.writeln("🌍 Oshxona turi: ${recipe.cuisineType}");
+    buffer.writeln("⚙️ Qiyinchilik darajasi: ${recipe.difficultyLevel}");
+    buffer.writeln("\n📝 Ingredientlar:");
+
+    for (var ingredients in recipe.ingredients) {
+      buffer.writeln("-${ingredients.name}: ${ingredients.quantity}");
+    }
+
+    buffer.writeln("Created Ad ${recipe.createdAt}");
+    buffer.write("Liked by users ${recipe.likedByUserIds}");
+
+    return buffer.toString();
+  }
+
+  Widget _buildCookingTimeWidget() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      decoration: BoxDecoration(
+        color: AppColors.succes.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.access_time, color: AppColors.succes),
+          const SizedBox(width: 8),
+          Text(
+            '${recipe.cookingTime} mins',
+            style: const TextStyle(
+              color: AppColors.succes,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildIngredientsList() {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: recipe.ingredients.length,
+      itemBuilder: (context, index) {
+        final ingredient = recipe.ingredients[index];
+        return ListTile(
+          leading: const Icon(Icons.fiber_manual_record, size: 12),
+          title: Text(ingredient.name),
+          trailing: Text(
+            ingredient.unit,
+            style: const TextStyle(color: AppColors.gray3),
+          ),
+        );
+      },
     );
   }
 }
