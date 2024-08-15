@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -8,13 +10,11 @@ import 'package:receipe_app/logic/bloc/saved_recipe/saved_recipe_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RecipeItemWidget extends StatefulWidget {
-  final int index;
   final Recipe recipe;
 
   const RecipeItemWidget({
     super.key,
     required this.recipe,
-    required this.index,
   });
 
   @override
@@ -22,8 +22,37 @@ class RecipeItemWidget extends StatefulWidget {
 }
 
 class _RecipeItemWidgetState extends State<RecipeItemWidget> {
+  void _onSave() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> box = prefs.getStringList('savedRecipesId') ?? [];
+
+    final index = box.indexWhere((element) => element == widget.recipe.id);
+    if (index != -1) {
+      box.removeAt(index);
+    } else {
+      box.add(widget.recipe.id);
+    }
+    prefs.setStringList('savedRecipesId', box);
+    UserConstants.savedRecipesId = box;
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
+    bool isSaved = false;
+
+    print('WIDGET_RECIPE ${widget.recipe.id}');
+    print("USER_CONSTANTS_SAVED: ${UserConstants.savedRecipesId}");
+    print('---------------------------------------------------------');
+
+    for (var each in UserConstants.savedRecipesId) {
+      if (each == widget.recipe.id) {
+        isSaved = true;
+        break;
+      }
+    }
+
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -70,40 +99,20 @@ class _RecipeItemWidgetState extends State<RecipeItemWidget> {
                         ),
                       ],
                     ),
-                    BlocBuilder<SavedRecipeBloc, SavedRecipeState>(
-                      builder: (context, state) {
-                        print('build worked');
-                        bool isSaved = false;
-                        test();
-                        print(UserConstants.savedRecipesId.length);
-                        if (UserConstants.savedRecipesId.isNotEmpty) {
-                          int index = UserConstants.savedRecipesId.indexWhere(
-                            (element) => element == widget.recipe.id,
-                          );
-                          isSaved = index != -1;
-                        }
-
-                        return GestureDetector(
-                          onTap: () => context
-                              .read<SavedRecipeBloc>()
-                              .add(ToggleSavedRecipeEvent(
-                                recipeId: widget.recipe.id,
-                                isSaved: isSaved,
-                              )),
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                            ),
-                            child: SvgPicture.asset(
-                              isSaved
-                                  ? AppIcons.bookmarksActive
-                                  : AppIcons.bookmarksInactive,
-                            ),
-                          ),
-                        );
-                      },
+                    GestureDetector(
+                      onTap: _onSave,
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        child: SvgPicture.asset(
+                          isSaved
+                              ? AppIcons.bookmarksActive
+                              : AppIcons.bookmarksInactive,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -145,9 +154,9 @@ class _RecipeItemWidgetState extends State<RecipeItemWidget> {
     );
   }
 
-  void test()async{
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    print(preferences.getStringList('savedRecipesId'));
-    print('--------------------------------------------------');
-  }
+// void test() async {
+//   SharedPreferences preferences = await SharedPreferences.getInstance();
+//   print(preferences.getStringList('savedRecipesId'));
+//   print('--------------------------------------------------');
+// }
 }

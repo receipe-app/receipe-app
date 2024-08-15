@@ -19,6 +19,9 @@ import 'package:receipe_app/logic/cubit/tab_box/tab_box_cubit.dart';
 import 'package:receipe_app/ui/screens/splash/splash_screen.dart';
 import 'package:toastification/toastification.dart';
 
+import 'data/model/recipe/comment.dart';
+import 'data/model/recipe/ingredient.dart';
+import 'data/model/recipe/instruction.dart';
 import 'data/model/recipe/recipe.dart';
 import 'data/repositories/user_repository.dart' as user;
 
@@ -27,13 +30,15 @@ void main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
+  await Hive.initFlutter();
+
+  Hive.registerAdapter(RecipeAdapter());
+  Hive.registerAdapter(IngredientAdapter());
+  Hive.registerAdapter(InstructionAdapter());
+  Hive.registerAdapter(CommentAdapter());
 
   await dotenv.load(fileName: '.env');
 
-  late final Box<Recipe> savedRecipesBox;
-
-
-  // Create repositories and services
   final AuthenticationRepository authenticationRepository =
       AuthenticationRepository();
   final UserDioService userDioService = UserDioService();

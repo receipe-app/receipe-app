@@ -1,6 +1,14 @@
+import 'package:hive_flutter/adapters.dart';
+
+part 'ingredient.g.dart';
+
+@HiveType(typeId: 4)
 class Ingredient {
+  @HiveField(0)
   String name;
+  @HiveField(1)
   double quantity;
+  @HiveField(2)
   String unit;
 
   Ingredient({
