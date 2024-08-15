@@ -6,6 +6,7 @@ import 'package:receipe_app/core/utils/user_constants.dart';
 import 'package:receipe_app/data/model/app_resposne.dart';
 import 'package:receipe_app/data/service/dio/user_dio_service.dart';
 import 'package:receipe_app/data/service/shared_preference/user_prefs_service.dart';
+import 'package:receipe_app/main.dart';
 import '../../../data/model/user_model.dart';
 
 part 'auth_event.dart';
@@ -105,6 +106,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     try {
       _authRepository.clearTokens();
+      recipeBox.delete('savedRecipes');
       emit(state.copyWith(authStatus: AuthStatus.unauthenticated));
     } catch (e) {
       emit(state.copyWith(authStatus: AuthStatus.error, error: e.toString()));

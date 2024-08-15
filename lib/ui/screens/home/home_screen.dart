@@ -153,20 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
-            Container(
-              height: 50,
-              width: 50,
-              decoration: BoxDecoration(
-                color: AppColors.primary100,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Center(
-                child: Icon(
-                  Icons.filter_9_plus,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+
           ],
         ),
       );

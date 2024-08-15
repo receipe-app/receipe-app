@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:receipe_app/core/utils/app_colors.dart';
 import 'package:receipe_app/core/utils/app_icons.dart';
+import 'package:receipe_app/data/model/models.dart';
 import 'package:receipe_app/logic/cubit/tab_box/tab_box_cubit.dart';
+import 'package:receipe_app/main.dart';
 import 'package:receipe_app/ui/screens/home/home_screen.dart';
 import 'package:receipe_app/ui/screens/profile/profile_screen.dart';
 import 'package:receipe_app/ui/screens/saved/saved_recipe.dart';
@@ -32,21 +34,6 @@ class _MainScreenState extends State<MainScreen> {
           body: _widgets[state],
           floatingActionButton: FloatingActionButton(
             onPressed: () async {
-              // context.read<RecipeBloc>().add(AddRecipeEvent(
-              //       title: 'osg',
-              //       ingredients: [
-              //         Ingredient(name: 'name', quantity: 0, unit: 'unit')
-              //       ],
-              //       instructions: [
-              //         Instruction(stepNumber: 0, description: 'description')
-              //       ],
-              //       preparationTime: 10,
-              //       cookingTime: 10,
-              //       cuisineType: 'cuisineType',
-              //       difficultyLevel: 'difficultyLevel',
-              //       imageFile: File(
-              //           '/data/user/0/com.example.receipe_app/cache/scaled_1000000662.jpg'),
-              //     ));
               Navigator.of(context).push(_showAddRecipe());
             },
             shape: const CircleBorder(),
