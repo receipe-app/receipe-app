@@ -44,17 +44,17 @@ class _ProfileScreenState extends State<ProfileScreen>
       UserConstants.name = _nameController.text;
       UserConstants.imageUrl = prefs.getString('imageUrl') ?? 'null';
     });
-  }
+  } 
 
   Future<void> _saveUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('name', _nameController.text);
-    UserConstants.name = _nameController.text; // Update UserConstants.name
+    UserConstants.name = _nameController.text;
     if (_image != null) {
       await prefs.setString('imageUrl', _image!.path);
-      UserConstants.imageUrl = _image!.path; // Update UserConstants.imageUrl
+      UserConstants.imageUrl = _image!.path;
     }
-    setState(() {}); // Trigger rebuild to reflect new data
+    setState(() {});
   }
 
   Future<void> _pickImage() async {
@@ -93,7 +93,6 @@ class _ProfileScreenState extends State<ProfileScreen>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Update name from UserConstants
             Text(UserConstants.name),
             const SizedBox(height: 20),
             const Text(
@@ -146,7 +145,6 @@ class _ProfileScreenState extends State<ProfileScreen>
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Handle for the modal sheet
                 Container(
                   width: 50,
                   height: 5,
@@ -164,7 +162,6 @@ class _ProfileScreenState extends State<ProfileScreen>
                   ),
                 ),
                 const SizedBox(height: 20),
-
                 GestureDetector(
                   onTap: _pickImage,
                   child: Stack(
@@ -195,8 +192,6 @@ class _ProfileScreenState extends State<ProfileScreen>
                   ),
                 ),
                 const SizedBox(height: 20),
-
-                // Name Input Field
                 TextField(
                   controller: _nameController,
                   decoration: InputDecoration(
@@ -216,7 +211,6 @@ class _ProfileScreenState extends State<ProfileScreen>
                   ),
                 ),
                 const SizedBox(height: 20),
-
                 ElevatedButton(
                   onPressed: () {
                     _saveUserData();
@@ -235,7 +229,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                   ),
                   child: const Text(
                     'Save Changes',
-                    style: TextStyle(fontSize: 16, color: AppColors.white ),
+                    style: TextStyle(fontSize: 16),
                   ),
                 ),
                 const SizedBox(height: 20),
