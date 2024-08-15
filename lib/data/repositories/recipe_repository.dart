@@ -37,4 +37,9 @@ class RecipeRepository {
 
   Future<List<Recipe>> fetchRecipes() async =>
       await _firebaseRecipeService.fetchRecipes();
+
+  /// DELETE RECIPE
+  Future<void> deleteRecipe({required String id}) async {
+    await _firebaseRecipeService.deleteRecipe(id: id);
+  }
 }

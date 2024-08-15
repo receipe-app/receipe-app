@@ -99,7 +99,7 @@ class AllAboutRecipeScreen extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.succes,
+                      color: AppColors.success,
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -142,18 +142,18 @@ class AllAboutRecipeScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       decoration: BoxDecoration(
-        color: AppColors.succes.withOpacity(0.1),
+        color: AppColors.success.withOpacity(0.1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.access_time, color: AppColors.succes),
+          const Icon(Icons.access_time, color: AppColors.success),
           const SizedBox(width: 8),
           Text(
             '${recipe.cookingTime} mins',
             style: const TextStyle(
-              color: AppColors.succes,
+              color: AppColors.success,
               fontWeight: FontWeight.bold,
             ),
           ),
