@@ -1,13 +1,18 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:receipe_app/ui/screens/all_about_recipe/all_about_recipe_screen.dart';
-import 'package:shimmer/shimmer.dart'; // Import the shimmer package
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:receipe_app/ui/screens/profile/widgets/recipe_grid.dart';
 import 'package:receipe_app/core/utils/app_colors.dart';
 import 'package:receipe_app/core/utils/user_constants.dart';
 import 'package:receipe_app/data/model/models.dart';
 import 'package:receipe_app/logic/bloc/auth/auth_bloc.dart';
 import 'package:receipe_app/logic/bloc/recipe/recipe_bloc.dart';
+import 'package:receipe_app/ui/screens/all_about_recipe/all_about_recipe_screen.dart';
+import 'package:receipe_app/ui/widgets/edit_recipe.dart';
+import 'package:shimmer/shimmer.dart'; // Import the shimmer package
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -19,17 +24,51 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final TextEditingController _nameController = TextEditingController();
+  File? _image;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _loadUserData();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _nameController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _nameController.text = prefs.getString('name') ?? 'null';
+      UserConstants.name = _nameController.text;
+      UserConstants.imageUrl = prefs.getString('imageUrl') ?? 'null';
+    });
+  } 
+
+  Future<void> _saveUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('name', _nameController.text);
+    UserConstants.name = _nameController.text;
+    if (_image != null) {
+      await prefs.setString('imageUrl', _image!.path);
+      UserConstants.imageUrl = _image!.path;
+    }
+    setState(() {});
+  }
+
+  Future<void> _pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
   }
 
   @override
@@ -42,7 +81,14 @@ class _ProfileScreenState extends State<ProfileScreen>
           IconButton(
             onPressed: () =>
                 context.read<AuthBloc>().add(const AuthEvent.logout()),
-            icon: const Icon(Icons.logout),
+            icon: const Icon(
+              Icons.logout,
+              color: AppColors.white,
+            ),
+          ),
+          IconButton(
+            onPressed: () => _showEditProfileBottomSheet(context),
+            icon: const Icon(Icons.edit),
           )
         ],
       ),
@@ -52,6 +98,7 @@ class _ProfileScreenState extends State<ProfileScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(UserConstants.name),
+            const SizedBox(height: 20),
             const Text(
               'Men yaratgan retseptlar',
               style: TextStyle(
@@ -63,12 +110,14 @@ class _ProfileScreenState extends State<ProfileScreen>
               child: BlocBuilder<RecipeBloc, RecipeState>(
                 builder: (context, state) {
                   if (state is LoadingRecipeState) {
-                    return _buildRecipeGrid(true);
+                    return const RecipeGrid(isLoading: true);
                   } else if (state is ErrorRecipeState) {
                     return Center(child: Text(state.errorMessage));
                   } else if (state is LoadedRecipeState) {
-                    return _buildRecipeGrid(
-                        false, _getUserRecipes(state.recipes));
+                    return RecipeGrid(
+                      isLoading: false,
+                      allRecipe: _getUserRecipes(state.recipes),
+                    );
                   }
                   return const SizedBox.shrink();
                 },
@@ -80,132 +129,121 @@ class _ProfileScreenState extends State<ProfileScreen>
     );
   }
 
-  Widget _buildRecipeGrid(bool isLoading, [List<Recipe>? allRecipe]) {
-    return GridView.builder(
-      padding: const EdgeInsets.only(top: 10),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 0.7,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-      ),
-      itemCount: isLoading ? 10 : allRecipe!.length,
-      itemBuilder: (BuildContext context, int index) {
-        if (isLoading) {
-          return Shimmer.fromColors(
-            baseColor: Colors.grey[300]!,
-            highlightColor: Colors.grey[100]!,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
-              ),
-            ),
-          );
-        } else {
-          final recipe = allRecipe![index];
-          return _buildRecipeCard(recipe: recipe);
-        }
-      },
-    );
-  }
 
-  Widget _buildRecipeCard({required Recipe recipe}) {
-    return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        CupertinoPageRoute(
-          builder: (context) => AllAboutRecipeScreen(recipe: recipe),
-        ),
+  void _showEditProfileBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
       ),
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        elevation: 5,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ClipRRect(
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(15)),
-              child: Stack(
-                alignment: Alignment.topRight,
-                children: [
-                  Image.network(
-                    recipe.imageUrl,
-                    height: 120,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 16.0,
+            right: 16.0,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 16.0,
+            top: 16.0,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  width: 50,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.star, color: Colors.amber, size: 16),
-                          SizedBox(width: 4),
-                        ],
-                      ),
-                    ),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Edit Profile',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(recipe.title,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 14),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis),
-                  const SizedBox(height: 4),
-                  const Text('By me',
-                      style: TextStyle(color: Colors.grey, fontSize: 12),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis),
-                  const SizedBox(height: 4),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                ),
+                const SizedBox(height: 20),
+                GestureDetector(
+                  onTap: _pickImage,
+                  child: Stack(
+                    alignment: Alignment.bottomRight,
                     children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.access_time,
-                              size: 14, color: Colors.grey),
-                          const SizedBox(width: 4),
-                          Text(
-                            '${recipe.cookingTime} min',
-                            style: const TextStyle(
-                              color: Colors.grey,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
+
+                      CircleAvatar(
+                        radius: 55,
+                        backgroundImage: _image != null
+                            ? FileImage(_image!)
+                            : UserConstants.imageUrl != 'null'
+                                ? FileImage(File(UserConstants.imageUrl))
+                                : const AssetImage('assets/default_avatar.png')
+                                    as ImageProvider,
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.favorite_border,
-                            color: AppColors.primary100, size: 20),
-                        onPressed: () {},
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(),
+                      Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.primary100,
+                        ),
+                        child: const Icon(
+                          Icons.camera_alt,
+                          color: Colors.white,
+                          size: 20,
+                        ),
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 20),
+                TextField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    labelText: 'Name',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(color: Colors.grey),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(color: Colors.blue),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    _saveUserData();
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary100,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 3,
+                  ),
+                  child: const Text(
+                    'Save Changes',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 

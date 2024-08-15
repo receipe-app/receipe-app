@@ -17,6 +17,7 @@ class FirebaseRecipeService {
   final String _apiKey = dotenv.get("WEB_API_KEY");
   final _recipeImageStorage = FirebaseStorage.instance;
 
+  /// FETCH RECIPES
   Future<List<Recipe>> fetchRecipes() async {
     final userToken = await _getUserToken();
 
@@ -39,6 +40,7 @@ class FirebaseRecipeService {
     return allRecipes;
   }
 
+  /// ADD RECIPE
   Future<Recipe> addRecipe({
     required String title,
     required List<Ingredient> ingredients,
@@ -91,6 +93,50 @@ class FirebaseRecipeService {
       );
 
       return newAddedRecipe;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// EDIT RECIPE
+  Future<void> editRecipe({
+    required String id,
+    required String newTitle,
+    required int newCookingTime, // in minutes
+    required String newCuisineType,
+    required String newDifficultyLevel,
+  }) async {
+    final userToken = await _getUserToken();
+    try {
+      final response = await _dioClient.updateData(
+        url: '/recipes/$id.json?auth=$userToken',
+        data: {
+          'title': newTitle,
+          'cookingTime': newCookingTime,
+          'cuisineType': newCuisineType,
+          'difficultyLevel': newDifficultyLevel,
+        },
+      );
+      if (response.statusCode != 200) {
+        final errorData = jsonDecode(response.data);
+        debugPrint("ERROR DATA: $errorData");
+        throw (errorData['error']);
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// DELETE RECIPE
+  Future<void> deleteRecipe({required String id}) async {
+    final userToken = await _getUserToken();
+    try {
+      final response =
+          await _dioClient.delete(url: 'recipes/$id.json?auth=$userToken');
+      if (response.statusCode != 200) {
+        final errorData = jsonDecode(response.data);
+        throw (errorData['error']);
+      }
     } catch (e) {
       rethrow;
     }
