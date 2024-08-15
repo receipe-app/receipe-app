@@ -189,7 +189,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
                                     difficultyLevel: _difficulty,
                                     imageFile: imageFile!,
                                   );*/
-                                  print('Recipe Submitted');
+                                  // print('Recipe Submitted');
                                 }
                               }
                             },

@@ -49,12 +49,12 @@ class UserDioService {
 
   Future<AppResponse> addUser({required UserModel user}) async {
     final AppResponse appResponse = AppResponse();
-
+    final userToken = await _getUserToken();
     try {
       final userMap = user.toJson();
       userMap.remove('id');
 
-      _dioClient.post(url: 'users.json', data: userMap);
+      _dioClient.post(url: 'users.json?auth=$userToken', data: userMap);
     } catch (e) {
       if (e is DioException) {
         appResponse.errorMessage = e.toString();

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:receipe_app/data/model/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/user_model.dart';

@@ -1,5 +1,3 @@
-import 'package:receipe_app/data/model/models.dart';
-
 import '../../data/model/user_model.dart';
 
 class UserConstants {
