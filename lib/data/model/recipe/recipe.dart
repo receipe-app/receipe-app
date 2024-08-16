@@ -6,7 +6,6 @@ import 'instruction.dart';
 
 part 'recipe.g.dart';
 
-
 @HiveType(typeId: 1)
 class Recipe {
   @HiveField(0)
@@ -52,6 +51,38 @@ class Recipe {
     this.comments = const [],
   }) : createdAt = createdAt ?? DateTime.now();
 
+  Recipe copyWith({
+    String? id,
+    String? title,
+    List<Ingredient>? ingredients,
+    List<Instruction>? instructions,
+    int? preparationTime,
+    int? cookingTime,
+    String? cuisineType,
+    String? difficultyLevel,
+    String? imageUrl,
+    String? authorId,
+    DateTime? createdAt,
+    List<String>? likedByUserIds,
+    List<Comment>? comments,
+  }) {
+    return Recipe(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      ingredients: ingredients ?? this.ingredients,
+      instructions: instructions ?? this.instructions,
+      preparationTime: preparationTime ?? this.preparationTime,
+      cookingTime: cookingTime ?? this.cookingTime,
+      cuisineType: cuisineType ?? this.cuisineType,
+      difficultyLevel: difficultyLevel ?? this.difficultyLevel,
+      imageUrl: imageUrl ?? this.imageUrl,
+      authorId: authorId ?? this.authorId,
+      createdAt: createdAt ?? this.createdAt,
+      likedByUserIds: likedByUserIds ?? this.likedByUserIds,
+      comments: comments ?? this.comments,
+    );
+  }
+
   @override
   String toString() {
     return 'Recipe{id: $id, title: $title, ingredients: $ingredients, instructions: $instructions, preparationTime: $preparationTime, cookingTime: $cookingTime, cuisineType: $cuisineType, difficultyLevel: $difficultyLevel, imageUrl: $imageUrl, authorId: $authorId, createdAt: $createdAt, likedByUserIds: $likedByUserIds, comments: $comments}';
@@ -59,7 +90,6 @@ class Recipe {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'title': title,
       'ingredients': ingredients,
       'instructions': instructions,
@@ -69,7 +99,7 @@ class Recipe {
       'difficultyLevel': difficultyLevel,
       'imageUrl': imageUrl,
       'authorId': authorId,
-      'createdAt': createdAt,
+      'createdAt': createdAt.toIso8601String(),
       'likedByUserIds': likedByUserIds,
       'comments': comments,
     };
@@ -95,10 +125,10 @@ class Recipe {
       difficultyLevel: json['difficultyLevel'] as String,
       imageUrl: json['imageUrl'] as String,
       authorId: json['authorId'] as String,
-      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now()),
+      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toString()),
       likedByUserIds: json['likedByUserIds'] == null
           ? []
-          : json['likedByUserIds'] as List<String>,
+          : (json['likedByUserIds'] as List<dynamic>).cast<String>(),
       comments: json['comments'] == null
           ? []
           : (json['comments'] as List<dynamic>)

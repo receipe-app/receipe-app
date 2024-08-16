@@ -114,7 +114,6 @@ class _ProfileScreenState extends State<ProfileScreen>
     );
   }
 
-
   void _showEditProfileBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -157,7 +156,6 @@ class _ProfileScreenState extends State<ProfileScreen>
                   child: Stack(
                     alignment: Alignment.bottomRight,
                     children: [
-
                       CircleAvatar(
                         radius: 55,
                         backgroundImage: _image != null
