@@ -21,7 +21,7 @@ class _MainScreenState extends State<MainScreen> {
     HomeScreen(),
     SavedRecipes(isSavedScreen: true),
     SavedRecipes(isSavedScreen: false),
-    Placeholder(),
+    // Placeholder(),
     ProfileScreen(),
   ];
 
