@@ -39,20 +39,8 @@ class RecipeRepository {
       await _firebaseRecipeService.fetchRecipes();
 
   /// EDIT RECIPE
-  Future<void> editRecipe({
-    required String id,
-    required String newTitle,
-    required int newCookingTime, // in minutes
-    required String newCuisineType,
-    required String newDifficultyLevel,
-  }) async {
-    await _firebaseRecipeService.editRecipe(
-      id: id,
-      newTitle: newTitle,
-      newCookingTime: newCookingTime,
-      newCuisineType: newCuisineType,
-      newDifficultyLevel: newDifficultyLevel,
-    );
+  Future<void> editRecipe({required Recipe recipe}) async {
+    await _firebaseRecipeService.editRecipe(recipe: recipe);
   }
 
   /// DELETE RECIPE

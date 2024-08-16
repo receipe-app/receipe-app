@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:receipe_app/core/utils/extensions/sizedbox_extension.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:receipe_app/logic/bloc/blocs.dart';
 import '../../data/model/recipe/recipe.dart';
 
-class EditRecipe extends StatefulWidget {
-  const EditRecipe({super.key, required this.recipe});
+class EditRecipeScreen extends StatefulWidget {
+  const EditRecipeScreen({super.key, required this.recipe});
 
   final Recipe recipe;
 
   @override
-  State<EditRecipe> createState() => _EditRecipeState();
+  State<EditRecipeScreen> createState() => _EditRecipeScreenState();
 }
 
-class _EditRecipeState extends State<EditRecipe> {
+class _EditRecipeScreenState extends State<EditRecipeScreen> {
   final _formKey = GlobalKey<FormState>();
 
   late TextEditingController _titleController;
@@ -27,17 +27,17 @@ class _EditRecipeState extends State<EditRecipe> {
     _titleController = TextEditingController(text: widget.recipe.title);
     _cookingTimeController =
         TextEditingController(text: widget.recipe.cookingTime.toString());
-    // Set the initial values and validate them against the dropdown options
+
     _selectedCuisineType = widget.recipe.cuisineType.isNotEmpty &&
             ['Breakfast', 'Lunch', 'Supper', 'Dessert']
                 .contains(widget.recipe.cuisineType)
         ? widget.recipe.cuisineType
-        : 'Breakfast'; // Default to 'breakfast' if value is invalid
+        : 'Breakfast';
 
     _selectedDifficultyLevel = widget.recipe.difficultyLevel.isNotEmpty &&
             ['Easy', 'Medium', 'Hard'].contains(widget.recipe.difficultyLevel)
         ? widget.recipe.difficultyLevel
-        : 'Easy'; // Default to 'easy' if value is invalid
+        : 'Easy';
   }
 
   @override
@@ -91,7 +91,7 @@ class _EditRecipeState extends State<EditRecipe> {
                 value: _selectedCuisineType,
                 label: 'Cuisine Type',
                 icon: Icons.restaurant,
-                items: ['breakfast', 'lunch', 'supper', 'dessert'],
+                items: ['Breakfast', 'Lunch', 'Supper', 'Dessert'],
                 onChanged: (value) {
                   setState(() {
                     _selectedCuisineType = value!;
@@ -102,17 +102,27 @@ class _EditRecipeState extends State<EditRecipe> {
                 value: _selectedDifficultyLevel,
                 label: 'Difficulty Level',
                 icon: Icons.emoji_events,
-                items: ['easy', 'medium', 'hard'],
+                items: ['Easy', 'Medium', 'Hard'],
                 onChanged: (value) {
                   setState(() {
                     _selectedDifficultyLevel = value!;
                   });
                 },
               ),
-              20.height,
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  if (_formKey.currentState!.validate()) {}
+                  if (_formKey.currentState!.validate()) {
+                    final newData = widget.recipe.copyWith(
+                        title: _titleController.text,
+                        cookingTime: int.parse(_cookingTimeController.text),
+                        cuisineType: _selectedCuisineType,
+                        difficultyLevel: _selectedDifficultyLevel);
+                    context.read<RecipeBloc>().add(
+                          EditRecipe(recipe: newData),
+                        );
+                    Navigator.of(context).pop();
+                  }
                 },
                 child: const Text('Save'),
               ),

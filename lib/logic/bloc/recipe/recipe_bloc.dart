@@ -56,27 +56,21 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
     }
   }
 
-  void _onEditRecipe(event, emit) async {
+  void _onEditRecipe(EditRecipe event, emit) async {
     List<Recipe> existingRecipes = [];
     if (state is LoadedRecipeState) {
       existingRecipes = (state as LoadedRecipeState).recipes;
     }
     emit(LoadingRecipeState());
     try {
-      await _recipeRepository.editRecipe(
-        id: event.id,
-        newTitle: event.newTitle,
-        newCookingTime: event.newCookingTime,
-        newCuisineType: event.newCuisineType,
-        newDifficultyLevel: event.newDifficultyLevel,
-      );
+      await _recipeRepository.editRecipe(recipe: event.recipe);
 
       for (var existingRecipe in existingRecipes) {
-        if (existingRecipe.id == event.id) {
-          existingRecipe.title = event.newTitle;
-          existingRecipe.cookingTime = event.newCookingTime;
-          existingRecipe.cuisineType = event.newCuisineType;
-          existingRecipe.difficultyLevel = event.newDifficultyLevel;
+        if (existingRecipe.id == event.recipe.id) {
+          existingRecipe.title = event.recipe.title;
+          existingRecipe.cookingTime = event.recipe.cookingTime;
+          existingRecipe.cuisineType = event.recipe.cuisineType;
+          existingRecipe.difficultyLevel = event.recipe.difficultyLevel;
         }
       }
       emit(LoadedRecipeState(recipes: existingRecipes));

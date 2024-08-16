@@ -99,23 +99,12 @@ class FirebaseRecipeService {
   }
 
   /// EDIT RECIPE
-  Future<void> editRecipe({
-    required String id,
-    required String newTitle,
-    required int newCookingTime, // in minutes
-    required String newCuisineType,
-    required String newDifficultyLevel,
-  }) async {
+  Future<void> editRecipe({required Recipe recipe}) async {
     final userToken = await _getUserToken();
     try {
       final response = await _dioClient.updateData(
-        url: '/recipes/$id.json?auth=$userToken',
-        data: {
-          'title': newTitle,
-          'cookingTime': newCookingTime,
-          'cuisineType': newCuisineType,
-          'difficultyLevel': newDifficultyLevel,
-        },
+        url: '/recipes/${recipe.id}.json?auth=$userToken',
+        data: recipe.toJson(),
       );
       if (response.statusCode != 200) {
         final errorData = jsonDecode(response.data);

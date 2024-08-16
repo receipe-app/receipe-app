@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:receipe_app/logic/bloc/blocs.dart';
+import 'package:receipe_app/ui/widgets/edit_recipe.dart';
 
 import 'favorit_icon.dart';
 import '../../../../core/utils/app_colors.dart';
@@ -14,6 +17,26 @@ class RecipeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onLongPress: () {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Siz haqiqatdan ham o\'chirmoqchimisiz'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Ortga'),
+              ),
+              TextButton(
+                onPressed: () => context
+                    .read<RecipeBloc>()
+                    .add(DeleteRecipeEvent(id: recipe.id)),
+                child: const Text('Ortga'),
+              ),
+            ],
+          ),
+        );
+      },
       onTap: () => Navigator.push(
         context,
         CupertinoPageRoute(
@@ -80,10 +103,18 @@ class RecipeCard extends StatelessWidget {
                         ],
                       ),
                       IconButton(
-                        icon: const Icon(Icons.favorite_border,
-                            color: AppColors.primary100, size: 20),
-                        onPressed: () {},
-                        padding: EdgeInsets.zero,
+                        icon: const Icon(
+                          Icons.edit,
+                          color: AppColors.primary100,
+                          size: 20,
+                        ),
+                        onPressed: () => Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) =>
+                                EditRecipeScreen(recipe: recipe),
+                          ),
+                        ),
                         constraints: const BoxConstraints(),
                       ),
                     ],
