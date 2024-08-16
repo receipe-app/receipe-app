@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:receipe_app/data/service/firebase_recipe_service.dart';
+import 'package:receipe_app/data/service/dio/firebase_recipe_service.dart';
 
 import '../model/recipe/ingredient.dart';
 import '../model/recipe/instruction.dart';

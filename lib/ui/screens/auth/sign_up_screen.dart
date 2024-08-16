@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:receipe_app/core/utils/app_colors.dart';
-import 'package:receipe_app/logic/bloc/auth/auth_bloc.dart';
+
+import '../../../core/utils/app_colors.dart';
+import '../../../logic/bloc/blocs.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});

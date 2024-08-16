@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:receipe_app/core/utils/device_screen.dart';
-import 'package:receipe_app/data/service/shared_preference/user_prefs_service.dart';
-import 'package:receipe_app/logic/bloc/auth/auth_bloc.dart';
-import 'package:receipe_app/ui/screens/auth/login_screen.dart';
-import 'package:receipe_app/ui/screens/main/main_screen.dart';
 
+import '../main/main_screen.dart';
+import '../auth/login_screen.dart';
+import '../../../logic/bloc/blocs.dart';
 import '../../../core/utils/user_constants.dart';
+import '../../../data/service/shared_preference/user_prefs_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -46,6 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
               ..add(const AuthEvent.checkTokenExpiry()),
             builder: (context, state) {
               if (state.authStatus == AuthStatus.authenticated) {
+                context.read<RecipeBloc>().add(const GetRecipesEvent());
                 return const MainScreen();
               } else {
                 return const LoginScreen();

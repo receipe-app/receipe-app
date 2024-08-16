@@ -7,10 +7,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../core/network/dio_client.dart';
-import '../model/recipe/ingredient.dart';
-import '../model/recipe/instruction.dart';
-import '../model/recipe/recipe.dart';
+import '../../../core/network/dio_client.dart';
+import '../../model/recipe/ingredient.dart';
+import '../../model/recipe/instruction.dart';
+import '../../model/recipe/recipe.dart';
 
 class FirebaseRecipeService {
   final _dioClient = DioClient();

@@ -1,9 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:receipe_app/core/utils/app_colors.dart';
-import 'package:receipe_app/data/model/recipe/recipe.dart';
-import 'package:receipe_app/ui/screens/all_about_recipe/all_about_recipe_screen.dart';
-import 'package:receipe_app/ui/screens/profile/widgets/favorit_icon.dart';
+import 'package:flutter/cupertino.dart';
+
+import 'favorit_icon.dart';
+import '../../../../core/utils/app_colors.dart';
+import '../../../../data/model/recipe/recipe.dart';
+import '../../all_about_recipe/all_about_recipe_screen.dart';
 
 class RecipeCard extends StatelessWidget {
   final Recipe recipe;

@@ -1,11 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:receipe_app/data/model/models.dart';
-import 'package:receipe_app/logic/bloc/liked_recipe/liked_recipe_bloc.dart';
-import 'package:receipe_app/logic/bloc/saved_recipe/saved_recipe_bloc.dart';
 
-import '../../../core/utils/app_colors.dart';
+import '../../../logic/bloc/blocs.dart';
+import '../../../core/utils/utils.dart';
+import '../../../data/model/recipe/recipe.dart';
 import '../all_about_recipe/all_about_recipe_screen.dart';
 
 class SavedRecipes extends StatefulWidget {

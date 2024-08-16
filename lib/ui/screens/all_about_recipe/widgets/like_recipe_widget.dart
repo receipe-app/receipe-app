@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:receipe_app/data/model/models.dart';
-import 'package:receipe_app/logic/bloc/liked_recipe/liked_recipe_bloc.dart';
 
 import '../../../../core/utils/app_colors.dart';
+import '../../../../data/model/models.dart';
+import '../../../../logic/bloc/blocs.dart';
 
 class LikeRecipeWidget extends StatelessWidget {
   final Recipe recipe;

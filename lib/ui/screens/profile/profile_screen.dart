@@ -2,13 +2,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:receipe_app/ui/screens/profile/widgets/recipe_grid.dart';
-import 'package:receipe_app/core/utils/app_colors.dart';
-import 'package:receipe_app/core/utils/user_constants.dart';
-import 'package:receipe_app/data/model/models.dart';
-import 'package:receipe_app/logic/bloc/auth/auth_bloc.dart';
-import 'package:receipe_app/logic/bloc/recipe/recipe_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'widgets/recipe_grid.dart';
+import '../../../logic/bloc/blocs.dart';
+import '../../../core/utils/utils.dart';
+import '../../../data/model/recipe/recipe.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});

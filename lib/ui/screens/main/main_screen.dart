@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -5,9 +6,11 @@ import 'package:receipe_app/core/utils/app_colors.dart';
 import 'package:receipe_app/core/utils/app_icons.dart';
 import 'package:receipe_app/logic/cubit/tab_box/tab_box_cubit.dart';
 import 'package:receipe_app/ui/screens/home/home_screen.dart';
+import 'package:receipe_app/ui/screens/no_connection/no_connection_screen.dart';
 import 'package:receipe_app/ui/screens/profile/profile_screen.dart';
 import 'package:receipe_app/ui/screens/saved/saved_recipe.dart';
 import 'package:receipe_app/ui/widgets/add_recipe.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -21,9 +24,27 @@ class _MainScreenState extends State<MainScreen> {
     HomeScreen(),
     SavedRecipes(isSavedScreen: true),
     SavedRecipes(isSavedScreen: false),
-    // Placeholder(),
     ProfileScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    Connectivity().onConnectivityChanged.listen(
+      (List<ConnectivityResult> result) {
+        if (!(result.contains(ConnectivityResult.wifi) ||
+            result.contains(ConnectivityResult.mobile))) {
+          Navigator.push(
+            context,
+            CupertinoPageRoute(
+              builder: (context) => const NoConnectionScreen(),
+            ),
+          );
+        }
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
