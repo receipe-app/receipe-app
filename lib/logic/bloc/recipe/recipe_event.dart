@@ -35,3 +35,19 @@ final class DeleteRecipeEvent extends RecipeEvent {
 
   DeleteRecipeEvent({required this.id});
 }
+
+final class EditRecipe extends RecipeEvent {
+  final String id;
+  final String newTitle;
+  final int newCookingTime;
+  final String newCuisineType;
+  final String newDifficultyLevel;
+
+  EditRecipe({
+    required this.id,
+    required this.newTitle,
+    required this.newCookingTime,
+    required this.newCuisineType,
+    required this.newDifficultyLevel,
+  });
+}
