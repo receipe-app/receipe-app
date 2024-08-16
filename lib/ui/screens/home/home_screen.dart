@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:receipe_app/core/utils/app_colors.dart';
-import 'package:receipe_app/core/utils/app_icons.dart';
-import 'package:receipe_app/core/utils/user_constants.dart';
-import 'package:receipe_app/logic/bloc/liked_recipe/liked_recipe_bloc.dart';
-import 'package:receipe_app/ui/screens/home/widgets/all_recipes_widget.dart';
-import 'package:receipe_app/ui/screens/home/widgets/new_recipes_only_widget.dart';
 
+import 'widgets/all_recipes_widget.dart';
+import 'widgets/serach_view_widget.dart';
+import 'widgets/new_recipes_only_widget.dart';
 import '../../../logic/bloc/recipe/recipe_bloc.dart';
 import '../../../logic/bloc/saved_recipe/saved_recipe_bloc.dart';
-import 'widgets/serach_view_widget.dart';
+import '../../../logic/bloc/liked_recipe/liked_recipe_bloc.dart';
+
+import '../../../core/utils/utils.dart' show UserConstants, AppColors, AppIcons;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,7 +22,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<RecipeBloc>().add(const GetRecipesEvent());
     context.read<LikedRecipeBloc>().add(const GetUserLikedRecipesEvent());
     context.read<SavedRecipeBloc>().add(const GetUserSavedRecipesEvent());
   }

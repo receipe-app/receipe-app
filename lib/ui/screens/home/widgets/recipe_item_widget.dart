@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:receipe_app/core/utils/app_icons.dart';
-import 'package:receipe_app/data/model/recipe/recipe.dart';
 
+import '../../../../core/utils/app_icons.dart';
+import '../../../../data/model/recipe/recipe.dart';
 import '../../../../logic/bloc/saved_recipe/saved_recipe_bloc.dart';
 
 class RecipeItemWidget extends StatefulWidget {

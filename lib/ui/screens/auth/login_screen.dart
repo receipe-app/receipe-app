@@ -1,11 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:receipe_app/core/utils/app_colors.dart';
-import 'package:receipe_app/core/utils/app_function.dart';
-import 'package:receipe_app/logic/bloc/auth/auth_bloc.dart';
-import 'package:receipe_app/ui/screens/auth/sign_up_screen.dart';
+
+import 'sign_up_screen.dart';
+import '../../../logic/bloc/auth/auth_bloc.dart';
+import '../../../core/utils/utils.dart' show AppColors, AppFunction;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

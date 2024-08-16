@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:receipe_app/data/model/recipe/recipe.dart';
-import 'package:receipe_app/ui/screens/profile/widgets/recipe_card.dart';
-import 'package:receipe_app/ui/screens/profile/widgets/shimmer_card.dart';
+
+import 'recipe_card.dart';
+import 'shimmer_card.dart';
+import '../../../../data/model/recipe/recipe.dart';
 
 class RecipeGrid extends StatelessWidget {
   final bool isLoading;

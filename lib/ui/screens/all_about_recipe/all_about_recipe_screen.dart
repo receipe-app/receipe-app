@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:receipe_app/core/utils/app_colors.dart';
-import 'package:receipe_app/data/model/recipe/recipe.dart';
-import 'package:receipe_app/ui/screens/all_about_recipe/widgets/like_recipe_widget.dart';
 import 'package:share_plus/share_plus.dart';
+
+import '../../../core/utils/app_colors.dart';
+import '../../../data/model/recipe/recipe.dart';
+import 'widgets/like_recipe_widget.dart';
 
 class AllAboutRecipeScreen extends StatelessWidget {
   final Recipe recipe;

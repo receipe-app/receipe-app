@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
-import 'package:receipe_app/ui/screens/all_about_recipe/all_about_recipe_screen.dart';
-import 'package:receipe_app/ui/screens/home/widgets/category_item_widget.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
-import '../../../../data/model/recipe/recipe.dart';
 import 'recipe_item_widget.dart';
+import 'category_item_widget.dart';
+import '../../../../data/model/models.dart';
+import '../../all_about_recipe/all_about_recipe_screen.dart';
 
 class AllRecipesWidget extends StatefulWidget {
   final List<Recipe> recipes;
